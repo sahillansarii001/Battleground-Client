@@ -1,0 +1,1 @@
+export default function AdminMatches() { return <div>Admin Matches</div>; }

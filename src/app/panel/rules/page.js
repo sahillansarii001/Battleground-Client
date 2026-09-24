@@ -1,0 +1,1 @@
+export default function PanelRules() { return <div>Team Rules</div>; }

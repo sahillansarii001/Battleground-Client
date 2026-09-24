@@ -1,0 +1,1 @@
+export default function AdminScores() { return <div>Admin Scores</div>; }

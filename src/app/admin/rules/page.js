@@ -1,0 +1,1 @@
+export default function AdminRules() { return <div>Admin Rules</div>; }

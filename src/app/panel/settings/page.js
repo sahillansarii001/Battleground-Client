@@ -1,0 +1,1 @@
+export default function PanelSettings() { return <div>Settings</div>; }

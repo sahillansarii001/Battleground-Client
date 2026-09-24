@@ -1,0 +1,1 @@
+export default function PanelLayout({ children }) { return <div>{children}</div>; }

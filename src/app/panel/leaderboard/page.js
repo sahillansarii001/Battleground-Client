@@ -1,0 +1,1 @@
+export default function PanelLeaderboard() { return <div>Team Leaderboard</div>; }
