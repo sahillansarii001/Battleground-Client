@@ -207,12 +207,12 @@ export default function Register() {
       {/* LEFT SPLIT - BRANDING (Hidden on mobile) */}
       <div className="hidden lg:flex w-1/3 relative bg-[#111518] flex-col justify-between p-12 border-r border-white/5 shadow-2xl z-20">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-        <div className="absolute top-1/4 -right-[20vw] w-[40vw] h-[40vw] bg-[#FF6A00]/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/4 right-[-20vw] w-[40vw] h-[40vw] bg-[#FF6A00]/10 rounded-full blur-[120px] pointer-events-none"></div>
         
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center gap-3">
             <div className="w-10 h-10 bg-[#FF6A00] flex items-center justify-center transform skew-x-[-10deg]">
-              <span className="text-black font-bold text-2xl transform skew-x-[10deg]">B</span>
+              <span className="text-black font-bold text-2xl transform skew-x-10">B</span>
             </div>
             <span className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest">BATTLEGROUNDS</span>
           </Link>
@@ -252,7 +252,7 @@ export default function Register() {
               ].map((s) => (
                 <div key={s.num} className="flex flex-col items-center bg-[#080A0C] px-2">
                   <div className={`w-8 h-8 flex items-center justify-center font-rajdhani font-bold text-sm transform skew-x-[-10deg] transition-all duration-300 ${step >= s.num ? 'bg-[#FF6A00] text-black shadow-[0_0_15px_rgba(255,106,0,0.4)]' : 'bg-[#111518] text-[#B8C0C2] border border-white/20'}`}>
-                    <span className="transform skew-x-[10deg]">{s.num}</span>
+                    <span className="transform skew-x-10">{s.num}</span>
                   </div>
                   <span className={`mt-2 font-orbitron text-[9px] tracking-widest uppercase ${step >= s.num ? 'text-[#FF6A00]' : 'text-[#B8C0C2]'}`}>{s.label}</span>
                 </div>
@@ -314,7 +314,7 @@ export default function Register() {
 
                   <div className="flex flex-col h-full">
                     <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase mb-1">Squad Insignia</label>
-                    <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 cursor-pointer min-h-[160px]">
+                    <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 cursor-pointer min-h-40">
                       <input type="file" accept="image/*" onChange={handleLogoChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                       {preview ? (
                         <img src={preview} alt="Preview" className="h-24 w-24 object-cover border border-[#FF6A00]" />
