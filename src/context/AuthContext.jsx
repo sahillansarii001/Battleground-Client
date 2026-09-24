@@ -42,9 +42,29 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    if (pathname.startsWith('/admin')) {
+      router.push('/admin/login');
+    } else {
+      router.push('/login');
+    }
+  }, [pathname, router]);
+
   useEffect(() => {
     refreshUser();
-  }, [refreshUser]);
+    
+    const handleUnauthorized = () => {
+      logout();
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
+  }, [refreshUser, logout]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -80,17 +100,6 @@ export function AuthProvider({ children }) {
       } else {
         router.push('/panel/dashboard');
       }
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    if (pathname.startsWith('/admin')) {
-      router.push('/admin/login');
-    } else {
-      router.push('/login');
     }
   };
 

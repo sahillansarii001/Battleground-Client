@@ -25,9 +25,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        // Dispatch a custom event instead of hard reloading
+        window.dispatchEvent(new Event('auth:unauthorized'));
       }
     }
     return Promise.reject(error.response?.data || error);
