@@ -194,7 +194,7 @@ export default function Register() {
             Your login credentials will be dispatched to <strong>{formData.email}</strong> once your squad is approved by an admin.
           </div>
           <Link href="/" className="inline-flex w-full justify-center bg-white hover:bg-[#39B54A] px-6 py-4 font-rajdhani font-bold text-black text-xl transition-colors uppercase tracking-widest transform skew-x-[-10deg]">
-            <span className="transform skew-x-[10deg]">Return to Base</span>
+            <span className="transform skew-x-10">Return to Base</span>
           </Link>
         </div>
       </div>
@@ -428,17 +428,17 @@ export default function Register() {
             <div className="mt-8 pt-4 border-t border-white/5 flex justify-between shrink-0">
               {step > 1 ? (
                 <button type="button" onClick={prevStep} className="px-5 py-2 bg-[#080A0C] hover:bg-white/5 text-white font-rajdhani font-bold text-sm uppercase tracking-widest border border-white/10 flex items-center gap-1 transform skew-x-[-10deg]">
-                  <span className="transform skew-x-[10deg] flex items-center"><ChevronLeft className="w-4 h-4"/> Back</span>
+                  <span className="transform skew-x-10 flex items-center"><ChevronLeft className="w-4 h-4"/> Back</span>
                 </button>
               ) : <div></div>}
               
               {step < 3 ? (
                 <button type="button" onClick={nextStep} className="px-6 py-2 bg-[#FF6A00] hover:bg-white hover:text-black text-black font-rajdhani font-bold text-sm uppercase tracking-widest transform skew-x-[-10deg] shadow-[0_0_10px_rgba(255,106,0,0.3)] flex items-center gap-1 transition-colors">
-                  <span className="transform skew-x-[10deg] flex items-center">Next <ChevronRight className="w-4 h-4"/></span>
+                  <span className="transform skew-x-10 flex items-center">Next <ChevronRight className="w-4 h-4"/></span>
                 </button>
               ) : (
                 <button type="button" onClick={handleSubmit} disabled={loading} className="px-8 py-2 bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold text-sm uppercase tracking-widest transform skew-x-[-10deg] shadow-[0_0_15px_rgba(255,106,0,0.4)] transition-colors disabled:opacity-50">
-                  <span className="transform skew-x-[10deg]">{loading ? 'Deploying...' : 'Deploy'}</span>
+                  <span className="transform skew-x-10">{loading ? 'Deploying...' : 'Deploy'}</span>
                 </button>
               )}
             </div>

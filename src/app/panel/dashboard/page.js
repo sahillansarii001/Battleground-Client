@@ -30,7 +30,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex items-center gap-4 hover:border-[#FF6A00]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#FF6A00]/30 flex items-center justify-center transform skew-x-[-10deg]">
-            <Trophy className="w-6 h-6 text-[#FF6A00] transform skew-x-[10deg]" />
+            <Trophy className="w-6 h-6 text-[#FF6A00] transform skew-x-10" />
           </div>
           <div>
             <p className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest">Current Rank</p>
@@ -40,7 +40,7 @@ export default function Dashboard() {
         
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex items-center gap-4 hover:border-[#FF6A00]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#FF6A00]/30 flex items-center justify-center transform skew-x-[-10deg]">
-            <Swords className="w-6 h-6 text-[#FF6A00] transform skew-x-[10deg]" />
+            <Swords className="w-6 h-6 text-[#FF6A00] transform skew-x-10" />
           </div>
           <div>
             <p className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest">Matches Played</p>
@@ -50,7 +50,7 @@ export default function Dashboard() {
 
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex items-center gap-4 hover:border-[#FF6A00]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#FF6A00]/30 flex items-center justify-center transform skew-x-[-10deg]">
-            <Target className="w-6 h-6 text-[#FF6A00] transform skew-x-[10deg]" />
+            <Target className="w-6 h-6 text-[#FF6A00] transform skew-x-10" />
           </div>
           <div>
             <p className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest">Total Kills</p>
@@ -71,7 +71,7 @@ export default function Dashboard() {
 
         <div className="bg-[#111518]/90 border border-white/10 p-6">
           <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Recent Intel</h3>
-          <div className="bg-[#080A0C] border border-white/5 p-4 mb-3 border-l-2 border-[#FF6A00]">
+          <div className="bg-[#080A0C] border border-white/5 p-4 mb-3 border-l-2">
             <p className="font-inter text-xs text-[#B8C0C2] mb-1">SYSTEM NOTIFICATION</p>
             <p className="font-rajdhani text-sm font-bold text-white uppercase">Squad Registration Received. Awaiting Admin Approval.</p>
           </div>

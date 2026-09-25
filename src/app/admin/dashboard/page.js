@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex flex-col items-center text-center group hover:border-[#FF6A00]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#FF6A00]/30 flex items-center justify-center transform skew-x-[-10deg] mb-4 group-hover:bg-[#FF6A00]/10">
-            <Users className="w-6 h-6 text-[#FF6A00] transform skew-x-[10deg]" />
+            <Users className="w-6 h-6 text-[#FF6A00] transform skew-x-10" />
           </div>
           <span className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest mb-1">Total Squads</span>
           <span className="font-rajdhani text-4xl font-bold text-white">42</span>
@@ -28,7 +28,7 @@ export default function AdminDashboard() {
         
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex flex-col items-center text-center group hover:border-yellow-500/50 transition-colors relative overflow-hidden">
           <div className="w-12 h-12 bg-[#080A0C] border border-yellow-500/30 flex items-center justify-center transform skew-x-[-10deg] mb-4 group-hover:bg-yellow-500/10">
-            <AlertOctagon className="w-6 h-6 text-yellow-500 transform skew-x-[10deg]" />
+            <AlertOctagon className="w-6 h-6 text-yellow-500 transform skew-x-10" />
           </div>
           <span className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest mb-1">Pending Approval</span>
           <span className="font-rajdhani text-4xl font-bold text-yellow-500">7</span>
@@ -36,7 +36,7 @@ export default function AdminDashboard() {
 
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex flex-col items-center text-center group hover:border-[#39B54A]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#39B54A]/30 flex items-center justify-center transform skew-x-[-10deg] mb-4 group-hover:bg-[#39B54A]/10">
-            <CheckCircle className="w-6 h-6 text-[#39B54A] transform skew-x-[10deg]" />
+            <CheckCircle className="w-6 h-6 text-[#39B54A] transform skew-x-10" />
           </div>
           <span className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest mb-1">Approved Squads</span>
           <span className="font-rajdhani text-4xl font-bold text-[#39B54A]">35</span>
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
 
         <div className="bg-[#111518]/90 border border-white/10 p-6 flex flex-col items-center text-center group hover:border-[#FF6A00]/50 transition-colors">
           <div className="w-12 h-12 bg-[#080A0C] border border-[#FF6A00]/30 flex items-center justify-center transform skew-x-[-10deg] mb-4 group-hover:bg-[#FF6A00]/10">
-            <ShieldAlert className="w-6 h-6 text-[#FF6A00] transform skew-x-[10deg]" />
+            <ShieldAlert className="w-6 h-6 text-[#FF6A00] transform skew-x-10" />
           </div>
           <span className="font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-widest mb-1">Active Matches</span>
           <span className="font-rajdhani text-4xl font-bold text-white">0</span>
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
       <div className="bg-[#111518]/90 border border-white/10 p-6">
         <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Recent System Activity</h3>
         <div className="space-y-2">
-          <div className="bg-[#080A0C] border border-white/5 p-4 flex items-center justify-between border-l-2 border-yellow-500">
+          <div className="bg-[#080A0C] border p-4 flex items-center justify-between border-l-2 border-yellow-500">
             <div>
               <p className="font-rajdhani text-sm font-bold text-white uppercase">New Registration</p>
               <p className="font-inter text-xs text-[#B8C0C2]">Squad 'TEAM SOUL' submitted intel.</p>

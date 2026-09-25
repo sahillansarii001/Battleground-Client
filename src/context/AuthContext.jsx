@@ -46,12 +46,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    if (pathname.startsWith('/admin')) {
-      router.push('/admin/login');
-    } else {
-      router.push('/login');
-    }
-  }, [pathname, router]);
+    router.push('/login');
+  }, [router]);
 
   useEffect(() => {
     refreshUser();
@@ -72,8 +68,8 @@ export function AuthProvider({ children }) {
     // Auth Guards
     if (!user && pathname.startsWith('/panel')) {
       router.replace('/login');
-    } else if (!user && pathname.startsWith('/admin') && pathname !== '/admin/login') {
-      router.replace('/admin/login');
+    } else if (!user && pathname.startsWith('/admin')) {
+      router.replace('/login');
     } else if (user && user.role === 'TEAM_USER') {
       if (pathname === '/login' || pathname.startsWith('/admin')) {
         router.replace('/panel/dashboard');
@@ -81,7 +77,7 @@ export function AuthProvider({ children }) {
         router.replace('/panel/change-password');
       }
     } else if (user && user.role === 'ADMIN') {
-      if (pathname === '/admin/login' || pathname.startsWith('/panel') || pathname === '/login') {
+      if (pathname === '/login' || pathname.startsWith('/panel')) {
         router.replace('/admin/dashboard');
       }
     }

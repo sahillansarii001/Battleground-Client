@@ -37,12 +37,12 @@ export default function Login() {
       {/* LEFT SPLIT - BRANDING (Hidden on mobile) */}
       <div className="hidden lg:flex w-1/3 relative bg-[#111518] flex-col justify-between p-12 border-r border-white/5 shadow-2xl z-20">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-        <div className="absolute top-1/4 -right-[20vw] w-[40vw] h-[40vw] bg-[#FF6A00]/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/4 right-[-20vw] w-[40vw] h-[40vw] bg-[#FF6A00]/10 rounded-full blur-[120px] pointer-events-none"></div>
         
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center gap-3">
             <div className="w-10 h-10 bg-[#FF6A00] flex items-center justify-center transform skew-x-[-10deg]">
-              <span className="text-black font-bold text-2xl transform skew-x-[10deg]">B</span>
+              <span className="text-black font-bold text-2xl transform skew-x-10">B</span>
             </div>
             <span className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest">BATTLEGROUNDS</span>
           </Link>
@@ -137,7 +137,7 @@ export default function Login() {
                   disabled={loading}
                   className="w-full flex justify-center py-3 px-4 bg-[#FF6A00] hover:bg-white text-black font-rajdhani text-xl font-bold uppercase tracking-widest transition-colors transform skew-x-[-10deg] shadow-[0_0_15px_rgba(255,106,0,0.4)] disabled:opacity-50"
                 >
-                  <span className="transform skew-x-[10deg]">{loading ? 'Authenticating...' : 'Establish Connection'}</span>
+                  <span className="transform skew-x-10">{loading ? 'Authenticating...' : 'Establish Connection'}</span>
                 </button>
               </div>
             </form>

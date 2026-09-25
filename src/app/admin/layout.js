@@ -12,7 +12,6 @@ export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!user || user.role !== 'ADMIN') return null;
-  if (pathname === '/admin/login') return children;
 
   const navigation = [
     { name: 'Command Center', href: '/admin/dashboard', icon: LayoutDashboard },

@@ -26,7 +26,7 @@ export default function Rules() {
           
           <div className="space-y-10">
             <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-              <div className="absolute -left-[11px] top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
+              <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
                 <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">01</span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
@@ -38,7 +38,7 @@ export default function Rules() {
             </section>
 
             <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-              <div className="absolute -left-[11px] top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
+              <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
                 <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">02</span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
@@ -50,7 +50,7 @@ export default function Rules() {
             </section>
 
             <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-              <div className="absolute -left-[11px] top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
+              <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
                 <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">03</span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
@@ -62,7 +62,7 @@ export default function Rules() {
             </section>
 
             <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-              <div className="absolute -left-[11px] top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
+              <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
                 <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">04</span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
@@ -82,7 +82,7 @@ export default function Rules() {
             </section>
             
             <section className="bg-red-950/20 border border-red-500/20 p-6 relative">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-transparent"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-red-500 to-transparent"></div>
               <h3 className="font-rajdhani text-2xl font-bold text-red-500 mb-2 flex items-center gap-3 uppercase">
                 <AlertOctagon className="w-6 h-6" /> Disqualification Criteria
               </h3>
@@ -97,7 +97,7 @@ export default function Rules() {
               By initializing deployment, you accept these terms.
             </p>
             <button className="flex items-center gap-2 px-8 py-4 bg-white hover:bg-[#FF6A00] text-black font-rajdhani font-bold text-lg transition-colors uppercase tracking-widest transform skew-x-[-10deg]">
-              <span className="transform skew-x-[10deg] flex items-center gap-2"><Download className="w-5 h-5" /> Download Protocol PDF</span>
+              <span className="transform skew-x-10 flex items-center gap-2"><Download className="w-5 h-5" /> Download Protocol PDF</span>
             </button>
           </div>
         </div>

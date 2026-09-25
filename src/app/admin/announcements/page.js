@@ -22,7 +22,7 @@ export default function AdminAnnouncements() {
       <div className="bg-[#111518]/90 border border-white/10 p-8">
         <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Recent Broadcasts</h3>
         <div className="space-y-4">
-          <div className="bg-[#080A0C] border border-white/5 p-4 border-l-2 border-[#FF6A00] flex justify-between items-start">
+          <div className="bg-[#080A0C] border border-white/5 p-4 border-l-2 flex justify-between items-start">
             <div>
               <p className="font-orbitron text-[9px] text-[#FF6A00] uppercase mb-1">GLOBAL ALERT</p>
               <h4 className="font-rajdhani text-lg font-bold text-white uppercase">Registrations are now open</h4>

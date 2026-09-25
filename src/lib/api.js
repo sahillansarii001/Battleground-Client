@@ -23,7 +23,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !error.config.url.includes('/auth/login')) {
       if (typeof window !== 'undefined') {
         // Dispatch a custom event instead of hard reloading
         window.dispatchEvent(new Event('auth:unauthorized'));
