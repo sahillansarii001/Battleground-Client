@@ -155,19 +155,19 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">IGN</label>
-                          <input type="text" value={player.inGameName} onChange={(e) => handlePlayerChange(index, 'inGameName', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
+                          <input type="text" value={player.inGameName || ''} onChange={(e) => handlePlayerChange(index, 'inGameName', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">Legal Name</label>
-                          <input type="text" value={player.playerName} onChange={(e) => handlePlayerChange(index, 'playerName', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
+                          <input type="text" value={player.playerName || ''} onChange={(e) => handlePlayerChange(index, 'playerName', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">BGMI ID</label>
-                          <input type="text" value={player.bgmiId} onChange={(e) => handlePlayerChange(index, 'bgmiId', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
+                          <input type="text" value={player.bgmiId || ''} onChange={(e) => handlePlayerChange(index, 'bgmiId', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">Role</label>
-                          <input type="text" value={player.role} onChange={(e) => handlePlayerChange(index, 'role', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
+                          <input type="text" value={player.role || ''} onChange={(e) => handlePlayerChange(index, 'role', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
                         </div>
                       </div>
                     </div>

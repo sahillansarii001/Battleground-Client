@@ -76,7 +76,7 @@ export default function MatchResults() {
   };
 
   const handleScoreChange = (teamId, field, value, extraData) => {
-    const numValue = parseInt(value) || 0;
+    const numValue = Math.max(0, parseInt(value) || 0);
     setScores(prev => prev.map(s => {
       if (s.teamId === teamId) {
         const updated = { ...s, [field]: numValue };
@@ -102,7 +102,7 @@ export default function MatchResults() {
   };
 
   const handlePlayerScoreChange = (teamId, playerId, kills) => {
-    const numKills = parseInt(kills) || 0;
+    const numKills = Math.max(0, parseInt(kills) || 0);
     
     setScores(prev => {
       const scoreIndex = prev.findIndex(s => s.teamId === teamId);
@@ -271,7 +271,7 @@ export default function MatchResults() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <input type="number" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
+                      <input type="number" min="0" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
                     </td>
                     <td className="p-4">
                       <span className="block w-full px-2 py-1 text-center text-[#39B54A] font-bold">{score.placementPoints}</span>
@@ -301,6 +301,7 @@ export default function MatchResults() {
                                     <span className="text-[10px] text-[#B8C0C2] uppercase">Kills</span>
                                     <input 
                                       type="number" 
+                                      min="0"
                                       disabled={isReadOnly} 
                                       value={pScore.kills} 
                                       onChange={(e) => handlePlayerScoreChange(score.teamId, p._id, e.target.value)} 
