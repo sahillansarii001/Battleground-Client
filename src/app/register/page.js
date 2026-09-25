@@ -121,6 +121,10 @@ export default function Register() {
       setError("ALL SQUAD INTEL REQUIRED (INCLUDING INSIGNIA)");
       return false;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setError("PLEASE ENTER A VALID EMAIL ADDRESS (E.G. @GMAIL.COM)");
+      return false;
+    }
     setError('');
     return true;
   };

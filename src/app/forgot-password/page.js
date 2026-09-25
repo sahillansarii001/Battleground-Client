@@ -21,6 +21,12 @@ export default function ForgotPassword() {
   const handleSendOtp = async (e) => {
     if (e) e.preventDefault();
     setError('');
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('PLEASE ENTER A VALID EMAIL ADDRESS (E.G. @GMAIL.COM)');
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await api.post('/auth/forgot-password', { email });
@@ -54,7 +60,11 @@ export default function ForgotPassword() {
     e.preventDefault();
     setError('');
     if (password !== confirmPassword) {
-      return setError('Passwords do not match');
+      return setError('PASSWORDS DO NOT MATCH');
+    }
+
+    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) {
+      return setError('PASSWORD MUST CONTAIN AT LEAST ONE CAPITAL LETTER, ONE NUMBER, AND ONE SPECIAL CHARACTER');
     }
     
     setLoading(true);

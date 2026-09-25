@@ -17,6 +17,17 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('PLEASE ENTER A VALID EMAIL ADDRESS (E.G. @GMAIL.COM)');
+      return;
+    }
+
+    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) {
+      setError('PASSWORD MUST CONTAIN AT LEAST ONE CAPITAL LETTER, ONE NUMBER, AND ONE SPECIAL CHARACTER');
+      return;
+    }
+
     setLoading(true);
 
     try {

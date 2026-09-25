@@ -88,11 +88,13 @@ export default function AdminLayout({ children }) {
       )}
 
       <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#080A0C] border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="absolute top-0 right-0 -mr-12 pt-2">
-          <button type="button" className="ml-1 flex h-10 w-10 items-center justify-center bg-[#FF6A00] text-black font-bold focus:outline-none transform skew-x-[-10deg]" onClick={() => setSidebarOpen(false)}>
-            <X className="h-6 w-6 transform skew-x-10" aria-hidden="true" />
-          </button>
-        </div>
+        {sidebarOpen && (
+          <div className="absolute top-0 right-0 -mr-12 pt-2">
+            <button type="button" className="ml-1 flex h-10 w-10 items-center justify-center bg-[#FF6A00] text-black font-bold focus:outline-none transform skew-x-[-10deg]" onClick={() => setSidebarOpen(false)}>
+              <X className="h-6 w-6 transform skew-x-10" aria-hidden="true" />
+            </button>
+          </div>
+        )}
         <SidebarContent />
       </div>
 
