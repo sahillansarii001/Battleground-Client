@@ -28,15 +28,30 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      // Decode user data from localStorage for immediate availability,
-      // then we could verify with backend if there was a /me endpoint
+      // Decode user data from localStorage for immediate availability
       const storedUser = localStorage.getItem('user');
+      let currentUser = null;
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        currentUser = JSON.parse(storedUser);
+        setUser(currentUser);
+      }
+
+      // If user is a TEAM_USER, fetch the latest team info from the backend
+      if (currentUser && currentUser.role === 'TEAM_USER') {
+        const res = await api.get('/team/me');
+        if (res.success && res.data && res.data.team) {
+          const updatedUser = {
+            ...currentUser,
+            teamName: res.data.team.teamName,
+            teamType: res.data.team.teamType,
+            logo: res.data.team.logo
+          };
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
       }
     } catch (error) {
       console.error('Failed to load user', error);
-      setUser(null);
     } finally {
       setIsLoading(false);
     }
