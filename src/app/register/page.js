@@ -60,7 +60,7 @@ const CustomSelect = ({ value, onChange, options, icon: Icon, placeholder, class
 export default function Register() {
   const [formData, setFormData] = useState({
     teamName: '',
-    teamType: 'Squad',
+    teamType: 'SQUAD',
     email: '',
     logo: null,
     players: []
@@ -74,10 +74,10 @@ export default function Register() {
 
   const getPlayerCount = (type) => {
     switch(type) {
-      case 'Solo': return 1;
-      case 'Duo': return 2;
-      case 'Trio': return 3;
-      case 'Squad': return 4;
+      case 'SOLO': return 1;
+      case 'DUO': return 2;
+      case 'TRIO': return 3;
+      case 'SQUAD': return 4;
       default: return 4;
     }
   };
@@ -127,7 +127,7 @@ export default function Register() {
 
   const validateStep2 = () => {
     for (let i = 0; i < players.length; i++) {
-      if (!players[i].playerName || !players[i].inGameName || !players[i].bgmiId || (formData.teamType === 'Squad' && !players[i].role)) {
+      if (!players[i].playerName || !players[i].inGameName || !players[i].bgmiId || (formData.teamType === 'SQUAD' && !players[i].role)) {
         setError(`OPERATOR 0${i + 1} DATA INCOMPLETE`);
         return false;
       }
@@ -303,10 +303,10 @@ export default function Register() {
                         icon={Users}
                         placeholder="SELECT SIZE"
                         options={[
-                          { value: 'Solo', label: 'Solo Operation (1)' },
-                          { value: 'Duo', label: 'Duo Operation (2)' },
-                          { value: 'Trio', label: 'Trio Operation (3)' },
-                          { value: 'Squad', label: 'Squad Operation (4)' }
+                          { value: 'SOLO', label: 'Solo Operation (1)' },
+                          { value: 'DUO', label: 'Duo Operation (2)' },
+                          { value: 'TRIO', label: 'Trio Operation (3)' },
+                          { value: 'SQUAD', label: 'Squad Operation (4)' }
                         ]}
                       />
                     </div>
@@ -358,7 +358,7 @@ export default function Register() {
                           type="text" placeholder="BGMI ID" value={player.bgmiId} onChange={e => handlePlayerChange(index, 'bgmiId', e.target.value)} 
                           className="w-full bg-[#111518] border border-white/5 px-3 py-2 text-white font-inter text-xs placeholder-[#4A5568] focus:border-[#FF6A00] focus:outline-none" 
                         />
-                        {formData.teamType === 'Squad' ? (
+                        {formData.teamType === 'SQUAD' ? (
                           <CustomSelect 
                             value={player.role} 
                             onChange={e => handlePlayerChange(index, 'role', e.target.value)} 
@@ -412,7 +412,7 @@ export default function Register() {
                           <div className="font-rajdhani font-bold text-white uppercase text-sm">{p.inGameName} {i === 0 && <span className="text-[#FF6A00] ml-1 text-[10px]">[IGL]</span>}</div>
                           <div className="font-inter text-[10px] text-[#B8C0C2] uppercase mt-0.5">ID: {p.bgmiId}</div>
                         </div>
-                        {formData.teamType === 'Squad' && p.role && (
+                        {formData.teamType === 'SQUAD' && p.role && (
                           <div className="font-orbitron text-[8px] text-[#FF6A00] border border-[#FF6A00]/20 px-1.5 py-0.5 bg-[#FF6A00]/5">
                             {p.role}
                           </div>
