@@ -11,7 +11,8 @@ export default function NavbarWrapper() {
     pathname.startsWith('/panel') || 
     pathname.startsWith('/admin') ||
     pathname === '/login' ||
-    pathname === '/register'
+    pathname === '/register' ||
+    pathname === '/forgot-password'
   ) {
     return null;
   }
