@@ -1,5 +1,5 @@
 "use client";
-import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon } from 'lucide-react';
+import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon, Trophy } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
@@ -7,6 +7,12 @@ import { useAuth } from '@/hooks/useAuth';
 export default function AdminSettings() {
   const { user, login } = useAuth();
   const [communityLink, setCommunityLink] = useState('');
+  
+  // Points System State
+  const [perKill, setPerKill] = useState(1);
+  const [placementPoints, setPlacementPoints] = useState({
+    "1": 15, "2": 12, "3": 10, "4": 8
+  });
   
   // Profile state
   const [name, setName] = useState('');
@@ -38,6 +44,12 @@ export default function AdminSettings() {
         
         if (settingsRes.success && settingsRes.data) {
           setCommunityLink(settingsRes.data.communityLink || '');
+          if (settingsRes.data.pointsSystem) {
+            setPerKill(settingsRes.data.pointsSystem.perKill ?? 1);
+            if (settingsRes.data.pointsSystem.placementPoints) {
+              setPlacementPoints(settingsRes.data.pointsSystem.placementPoints);
+            }
+          }
         }
         if (profileRes.success && profileRes.data) {
           setName(profileRes.data.name || 'Global Admin');
@@ -60,7 +72,13 @@ export default function AdminSettings() {
     try {
       setSavingSettings(true);
       setErrorMsg('');
-      await api.put('/admin/settings', { communityLink });
+      await api.put('/admin/settings', { 
+        communityLink,
+        pointsSystem: {
+          perKill: Number(perKill),
+          placementPoints
+        }
+      });
       setSuccessMsg('System settings saved successfully');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
@@ -324,6 +342,63 @@ export default function AdminSettings() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Points System Configuration */}
+        <div className="bg-[#111518]/90 border border-white/10 p-6 md:col-span-2">
+          <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-widest mb-6 flex items-center gap-2 border-b border-white/10 pb-2">
+            <Trophy className="w-5 h-5 text-[#FF6A00]" />
+            Points System Configuration
+          </h3>
+          
+          <div className="flex flex-wrap gap-6 items-center">
+            
+            {/* Per Kill */}
+            <div className="flex flex-col w-24">
+              <span className="text-[#B8C0C2] font-orbitron text-[10px] font-bold mb-2 tracking-widest text-center uppercase">Per Kill</span>
+              <div className="hud-border p-1 bg-[#1A2023]">
+                <input 
+                  type="number" 
+                  value={perKill}
+                  onChange={(e) => setPerKill(e.target.value)}
+                  min="0"
+                  className="w-full bg-black/50 border-none text-white font-rajdhani font-bold text-xl px-2 py-2 focus:outline-none text-center focus:bg-[#FF6A00]/10 transition-colors" 
+                />
+              </div>
+            </div>
+
+            {/* Separator */}
+            <div className="h-16 w-[1px] bg-white/10 hidden sm:block"></div>
+
+            {/* Placement Points */}
+            {Array.from({ length: 4 }, (_, i) => i + 1).map((pos) => (
+              <div key={pos} className="flex flex-col w-24">
+                <span className="text-[#FF6A00] font-orbitron text-[10px] font-bold mb-2 tracking-widest text-center uppercase">Rank #{pos}</span>
+                <div className="hud-border p-1 bg-[#1A2023]">
+                  <input 
+                    type="number" 
+                    value={placementPoints[pos] || 0}
+                    onChange={(e) => setPlacementPoints({ ...placementPoints, [pos]: Number(e.target.value) })}
+                    min="0"
+                    className="w-full bg-black/50 border-none text-white font-rajdhani font-bold text-xl px-2 py-2 focus:outline-none text-center focus:bg-[#FF6A00]/10 transition-colors" 
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-6 mt-6 border-t border-white/10">
+            <button 
+              onClick={handleSaveSettings}
+              disabled={savingSettings}
+              className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-8 py-3 uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg] ml-auto"
+            >
+              <div className="transform skew-x-10 flex items-center gap-2">
+                {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save Points System
+              </div>
+            </button>
           </div>
         </div>
 

@@ -15,6 +15,17 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (team) {
       setFormData({
         teamName: team.teamName || '',

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Search, Filter, Check, X, Eye, Edit, Trash2, Key } from 'lucide-react';
 import api from '@/lib/api';
 import TeamModal from '@/components/admin/TeamModal';
+import ActionModal from '@/components/admin/ActionModal';
 
 export default function AdminTeams() {
   const [teams, setTeams] = useState([]);
@@ -12,6 +13,7 @@ export default function AdminTeams() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [actionModal, setActionModal] = useState({ isOpen: false });
 
   useEffect(() => {
     fetchTeams();
@@ -30,53 +32,89 @@ export default function AdminTeams() {
     }
   };
 
-  const approveTeam = async (id) => {
-    try {
-      if (!window.confirm("Approve this team? This will email them temporary credentials.")) return;
-      await api.patch(`/admin/teams/${id}/approve`);
-      alert("Team approved.");
-      fetchTeams();
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to approve");
-    }
+  const approveTeam = (id) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Approve Team',
+      message: 'Approve this team? This will email them temporary credentials.',
+      confirmText: 'Approve',
+      onConfirm: async () => {
+        try {
+          setActionModal({ isOpen: false });
+          await api.patch(`/admin/teams/${id}/approve`);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Team approved.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+          fetchTeams();
+        } catch (error) {
+          console.error(error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to approve', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
-  const rejectTeam = async (id) => {
-    try {
-      const reason = window.prompt("Reason for rejection:");
-      if (!reason) return;
-      await api.patch(`/admin/teams/${id}/reject`, { reason });
-      alert("Team rejected.");
-      fetchTeams();
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to reject");
-    }
+  const rejectTeam = (id) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Reject Team',
+      message: 'Enter reason for rejection:',
+      requireInput: true,
+      inputPlaceholder: 'Reason (optional)',
+      confirmText: 'Reject',
+      isDanger: true,
+      onConfirm: async (reason) => {
+        try {
+          setActionModal({ isOpen: false });
+          await api.patch(`/admin/teams/${id}/reject`, { reason });
+          setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Team rejected.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+          fetchTeams();
+        } catch (error) {
+          console.error(error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to reject', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
-  const deleteTeam = async (id) => {
-    try {
-      if (!window.confirm("Are you sure you want to completely delete this team and its user account? This cannot be undone.")) return;
-      await api.delete(`/admin/teams/${id}`);
-      fetchTeams();
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to delete team");
-    }
+  const deleteTeam = (id) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Delete Team',
+      message: 'Are you sure you want to completely delete this team and its user account? This cannot be undone.',
+      confirmText: 'Delete',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          setActionModal({ isOpen: false });
+          await api.delete(`/admin/teams/${id}`);
+          fetchTeams();
+        } catch (error) {
+          console.error(error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to delete team', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
-  const changePassword = async (id) => {
-    try {
-      const newPassword = window.prompt("Enter new password for this team's user account:");
-      if (!newPassword) return;
-      
-      await api.put(`/admin/teams/${id}/password`, { newPassword });
-      alert("Password updated successfully.");
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to update password");
-    }
+  const changePassword = (id) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Change Password',
+      message: "Enter new password for this team's user account:",
+      requireInput: true,
+      inputPlaceholder: 'New Password',
+      confirmText: 'Update',
+      onConfirm: async (newPassword) => {
+        if (!newPassword) return;
+        try {
+          setActionModal({ isOpen: false });
+          await api.put(`/admin/teams/${id}/password`, { newPassword });
+          setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Password updated successfully.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        } catch (error) {
+          console.error(error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to update password', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
   const openEditModal = (team) => {
@@ -198,6 +236,7 @@ export default function AdminTeams() {
           fetchTeams();
         }} 
       />
+      <ActionModal {...actionModal} onClose={() => setActionModal({ isOpen: false })} />
     </div>
   );
 }

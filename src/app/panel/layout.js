@@ -24,11 +24,16 @@ export default function PanelLayout({ children }) {
 
   const SidebarContent = () => (
     <>
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-white/10 bg-[#0B0D0F]">
-        <Activity className="w-5 h-5 text-[#FF6A00] mr-3" />
-        <span className="font-rajdhani text-2xl font-bold tracking-widest text-white uppercase">
-          Command <span className="text-[#FF6A00]">Center</span>
-        </span>
+      <div className="flex h-16 shrink-0 items-center justify-between px-6 border-b border-white/10 bg-[#0B0D0F]">
+        <div className="flex items-center">
+          <Activity className="w-5 h-5 text-[#FF6A00] mr-3" />
+          <span className="font-rajdhani text-2xl font-bold tracking-widest text-white uppercase">
+            Command <span className="text-[#FF6A00]">Center</span>
+          </span>
+        </div>
+        <button type="button" className="lg:hidden text-[#B8C0C2] hover:text-[#FF6A00] transition-colors" onClick={() => setSidebarOpen(false)}>
+          <X className="h-6 w-6" aria-hidden="true" />
+        </button>
       </div>
       <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6 bg-[#080A0C] relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
@@ -105,12 +110,8 @@ export default function PanelLayout({ children }) {
         <div className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#080A0C] border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="absolute top-0 right-0 -mr-12 pt-2">
-          <button type="button" className="ml-1 flex h-10 w-10 items-center justify-center bg-[#FF6A00] text-black font-bold focus:outline-none transform skew-x-[-10deg]" onClick={() => setSidebarOpen(false)}>
-            <X className="h-6 w-6 transform skew-x-10" aria-hidden="true" />
-          </button>
-        </div>
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#080A0C] border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col h-full ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+
         <SidebarContent />
       </div>
 
@@ -132,7 +133,7 @@ export default function PanelLayout({ children }) {
           </div>
         </div>
 
-        <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 relative z-10">
+        <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

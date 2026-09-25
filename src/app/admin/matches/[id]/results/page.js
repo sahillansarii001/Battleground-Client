@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Save, CheckCircle, Upload, ArrowLeft } from 'lucide-react';
+import { Save, CheckCircle, Upload, ArrowLeft, ChevronDown, ChevronUp, Edit, X } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function MatchResults() {
@@ -10,7 +10,10 @@ export default function MatchResults() {
   const [match, setMatch] = useState(null);
   const [teams, setTeams] = useState([]);
   const [scores, setScores] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [expandedTeamId, setExpandedTeamId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -18,17 +21,22 @@ export default function MatchResults() {
 
   const fetchData = async () => {
     try {
-      // Fetch Match
-      const matchRes = await api.get('/matches');
+      // Fetch Match, Teams, Settings
+      const [matchRes, teamsRes, settingsRes] = await Promise.all([
+        api.get('/matches'),
+        api.get('/admin/teams'),
+        api.get('/admin/settings')
+      ]);
+
       const foundMatch = matchRes.data.find(m => m._id === id);
       setMatch(foundMatch);
-
-      // Fetch Teams
-      const teamsRes = await api.get('/admin/teams');
       setTeams(teamsRes.data.filter(t => t.status === 'APPROVED'));
+      if (settingsRes.success && settingsRes.data) {
+        setSettings(settingsRes.data.pointsSystem);
+      }
 
       // Fetch existing scores if any
-      const scoreRes = await api.get(`/matches/${id}/scores`);
+      const scoreRes = await api.get(`/matches/${id}/results`);
       if (scoreRes.success && scoreRes.data.length > 0) {
         // Map scores for easy editing
         const existingScores = scoreRes.data.map(s => ({
@@ -37,7 +45,11 @@ export default function MatchResults() {
           placementPoints: s.placementPoints,
           kills: s.kills,
           killPoints: s.killPoints,
-          totalPoints: s.totalPoints
+          totalPoints: s.totalPoints,
+          playerScores: s.playerScores?.map(ps => ({
+            playerId: ps.playerId?._id || ps.playerId,
+            kills: ps.kills
+          })) || []
         }));
         setScores(existingScores);
       } else {
@@ -49,8 +61,10 @@ export default function MatchResults() {
             placement: 0,
             placementPoints: 0,
             kills: 0,
+            kills: 0,
             killPoints: 0,
-            totalPoints: 0
+            totalPoints: 0,
+            playerScores: t.players?.map(p => ({ playerId: p._id, kills: 0 })) || []
           }));
         setScores(initScores);
       }
@@ -61,25 +75,72 @@ export default function MatchResults() {
     }
   };
 
-  const handleScoreChange = (teamId, field, value) => {
+  const handleScoreChange = (teamId, field, value, extraData) => {
     const numValue = parseInt(value) || 0;
     setScores(prev => prev.map(s => {
       if (s.teamId === teamId) {
         const updated = { ...s, [field]: numValue };
-        // Auto calculate total
-        if (field === 'placementPoints' || field === 'killPoints') {
-          updated.totalPoints = (field === 'placementPoints' ? numValue : s.placementPoints) + (field === 'killPoints' ? numValue : s.killPoints);
+        
+        // Auto calculate points based on settings
+        if (field === 'placement' && settings?.placementPoints) {
+          updated.placementPoints = settings.placementPoints[String(numValue)] || 0;
         }
+        if (field === 'kills' && settings?.perKill !== undefined) {
+          updated.killPoints = numValue * settings.perKill;
+        }
+        
+        updated.totalPoints = updated.placementPoints + updated.killPoints;
+        
+        if (extraData?.playerScores) {
+          updated.playerScores = extraData.playerScores;
+        }
+
         return updated;
       }
       return s;
     }));
   };
 
+  const handlePlayerScoreChange = (teamId, playerId, kills) => {
+    const numKills = parseInt(kills) || 0;
+    
+    setScores(prev => {
+      const scoreIndex = prev.findIndex(s => s.teamId === teamId);
+      if (scoreIndex === -1) return prev;
+      
+      const teamScore = prev[scoreIndex];
+      const updatedPlayerScores = [...(teamScore.playerScores || [])];
+      
+      const pIndex = updatedPlayerScores.findIndex(p => p.playerId === playerId);
+      if (pIndex >= 0) {
+        updatedPlayerScores[pIndex].kills = numKills;
+      } else {
+        updatedPlayerScores.push({ playerId, kills: numKills });
+      }
+      
+      const totalKills = updatedPlayerScores.reduce((sum, p) => sum + p.kills, 0);
+      
+      // We need to call handleScoreChange logic here but since it uses setState, 
+      // it's better to just inline the calculation for the team score
+      
+      const updatedTeamScore = { ...teamScore, kills: totalKills, playerScores: updatedPlayerScores };
+      
+      if (settings?.perKill !== undefined) {
+        updatedTeamScore.killPoints = totalKills * settings.perKill;
+      }
+      updatedTeamScore.totalPoints = updatedTeamScore.placementPoints + updatedTeamScore.killPoints;
+      
+      const newScores = [...prev];
+      newScores[scoreIndex] = updatedTeamScore;
+      return newScores;
+    });
+  };
+
   const saveDraft = async () => {
     try {
-      await api.put(`/matches/${id}/results`, { scores });
+      await api.post(`/matches/${id}/results`, { scores });
       alert('Draft saved successfully');
+      setIsEditing(false);
       fetchData();
     } catch (error) {
       console.error(error);
@@ -128,25 +189,48 @@ export default function MatchResults() {
           <p className="font-inter text-xs text-[#B8C0C2] mt-1">Status: {match.resultStatus || 'DRAFT'}</p>
         </div>
         <div className="flex gap-2">
-          {(!match.resultStatus || match.resultStatus === 'DRAFT') && (
+          {isEditing ? (
             <>
-              <button onClick={saveDraft} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                <Save className="w-4 h-4" /> Save Draft
+              <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                <X className="w-4 h-4" /> Cancel
               </button>
-              <button onClick={verifyResults} className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                <CheckCircle className="w-4 h-4" /> Verify
+              <button onClick={saveDraft} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                <Save className="w-4 h-4" /> Save Changes
               </button>
             </>
-          )}
-          {match.resultStatus === 'VERIFIED' && (
-            <button onClick={publishResults} className="flex items-center gap-2 bg-[#39B54A] hover:bg-[#39B54A]/80 text-white px-6 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-              <Upload className="w-4 h-4" /> Publish Globally
-            </button>
-          )}
-          {match.resultStatus === 'PUBLISHED' && (
-            <div className="bg-[#39B54A]/20 text-[#39B54A] px-6 py-2 font-bold uppercase tracking-widest font-rajdhani border border-[#39B54A]/50">
-              PUBLISHED
-            </div>
+          ) : (
+            <>
+              {(!match.resultStatus || match.resultStatus === 'DRAFT') && (
+                <>
+                  <button onClick={saveDraft} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                    <Save className="w-4 h-4" /> Save Draft
+                  </button>
+                  <button onClick={verifyResults} className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                    <CheckCircle className="w-4 h-4" /> Verify
+                  </button>
+                </>
+              )}
+              {match.resultStatus === 'VERIFIED' && (
+                <>
+                  <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                    <Edit className="w-4 h-4" /> Edit
+                  </button>
+                  <button onClick={publishResults} className="flex items-center gap-2 bg-[#39B54A] hover:bg-[#39B54A]/80 text-white px-6 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                    <Upload className="w-4 h-4" /> Publish Globally
+                  </button>
+                </>
+              )}
+              {match.resultStatus === 'PUBLISHED' && (
+                <>
+                  <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                    <Edit className="w-4 h-4" /> Edit
+                  </button>
+                  <div className="bg-[#39B54A]/20 text-[#39B54A] px-6 py-2 font-bold uppercase tracking-widest font-rajdhani border border-[#39B54A]/50">
+                    PUBLISHED
+                  </div>
+                </>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -167,26 +251,73 @@ export default function MatchResults() {
             {scores.map(score => {
               const team = teams.find(t => t._id === score.teamId);
               if (!team) return null;
-              const isReadOnly = match.resultStatus === 'VERIFIED' || match.resultStatus === 'PUBLISHED';
+              const isReadOnly = (match.resultStatus === 'VERIFIED' || match.resultStatus === 'PUBLISHED') && !isEditing;
+              const isExpanded = expandedTeamId === score.teamId;
+              
               return (
-                <tr key={score.teamId} className="border-b border-white/5 hover:bg-white/5">
-                  <td className="p-4 font-rajdhani font-bold text-white uppercase tracking-wider">{team.teamName}</td>
-                  <td className="p-4">
-                    <input type="number" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
-                  </td>
-                  <td className="p-4">
-                    <input type="number" disabled={isReadOnly} value={score.placementPoints} onChange={(e) => handleScoreChange(score.teamId, 'placementPoints', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-[#39B54A] font-bold disabled:opacity-50" />
-                  </td>
-                  <td className="p-4">
-                    <input type="number" disabled={isReadOnly} value={score.kills} onChange={(e) => handleScoreChange(score.teamId, 'kills', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
-                  </td>
-                  <td className="p-4">
-                    <input type="number" disabled={isReadOnly} value={score.killPoints} onChange={(e) => handleScoreChange(score.teamId, 'killPoints', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-red-400 font-bold disabled:opacity-50" />
-                  </td>
-                  <td className="p-4">
-                    <input type="number" disabled value={score.totalPoints} className="w-full bg-transparent px-2 py-1 text-center text-[#FF6A00] font-bold font-rajdhani text-xl" />
-                  </td>
-                </tr>
+                <Fragment key={score.teamId}>
+                  <tr className="border-b border-white/5 hover:bg-white/5">
+                    <td className="p-4">
+                      <div 
+                        className="flex items-center gap-2 cursor-pointer group"
+                        onClick={() => setExpandedTeamId(isExpanded ? null : score.teamId)}
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-[#FF6A00]" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-white/50 group-hover:text-[#FF6A00]" />
+                        )}
+                        <span className="font-rajdhani font-bold text-white uppercase tracking-wider">{team.teamName}</span>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <input type="number" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
+                    </td>
+                    <td className="p-4">
+                      <span className="block w-full px-2 py-1 text-center text-[#39B54A] font-bold">{score.placementPoints}</span>
+                    </td>
+                    <td className="p-4">
+                      <span className="block w-full px-2 py-1 text-center text-white">{score.kills}</span>
+                    </td>
+                    <td className="p-4">
+                      <span className="block w-full px-2 py-1 text-center text-red-400 font-bold">{score.killPoints}</span>
+                    </td>
+                    <td className="p-4">
+                      <span className="block w-full px-2 py-1 text-center text-[#FF6A00] font-bold font-rajdhani text-xl">{score.totalPoints}</span>
+                    </td>
+                  </tr>
+                  
+                  {isExpanded && (
+                    <tr className="bg-[#1A2023]/50 border-b border-white/5">
+                      <td colSpan="6" className="p-4">
+                        <div className="flex flex-wrap gap-4 pl-8">
+                          {team.players && team.players.length > 0 ? (
+                            team.players.map(p => {
+                              const pScore = score.playerScores?.find(ps => ps.playerId === p._id) || { kills: 0 };
+                              return (
+                                <div key={p._id} className="bg-[#080A0C] border border-white/10 p-2 flex items-center gap-3">
+                                  <span className="text-white text-xs font-orbitron">{p.inGameName}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10px] text-[#B8C0C2] uppercase">Kills</span>
+                                    <input 
+                                      type="number" 
+                                      disabled={isReadOnly} 
+                                      value={pScore.kills} 
+                                      onChange={(e) => handlePlayerScoreChange(score.teamId, p._id, e.target.value)} 
+                                      className="w-16 bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50 focus:border-[#FF6A00] outline-none" 
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <span className="text-xs text-[#B8C0C2]">No players registered for this team.</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               )
             })}
           </tbody>

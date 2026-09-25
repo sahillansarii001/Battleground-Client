@@ -114,7 +114,7 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
 
-        <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 relative z-10">
+        <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

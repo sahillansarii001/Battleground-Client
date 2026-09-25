@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Swords, Plus, Calendar, Play, CheckSquare } from 'lucide-react';
+import { Swords, Plus, Calendar, Play, CheckSquare, Square } from 'lucide-react';
 import api from '@/lib/api';
 import MatchModal from '@/components/admin/MatchModal';
 import { useRouter } from 'next/navigation';
@@ -8,12 +8,24 @@ import { useRouter } from 'next/navigation';
 export default function AdminMatches() {
   const [matches, setMatches] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startMatchModal, setStartMatchModal] = useState({ isOpen: false, match: null, roomId: '', roomPassword: '' });
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     fetchMatches();
   }, []);
+
+  useEffect(() => {
+    if (startMatchModal.isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [startMatchModal.isOpen]);
 
   const fetchMatches = async () => {
     try {
@@ -40,13 +52,26 @@ export default function AdminMatches() {
     }
   };
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (id, status, extra = {}) => {
     try {
-      await api.put(`/matches/${id}/status`, { status });
+      await api.put(`/matches/${id}/status`, { status, ...extra });
       fetchMatches();
     } catch (error) {
       console.error('Failed to update status', error);
     }
+  };
+
+  const handleStartMatch = async (e) => {
+    e.preventDefault();
+    if (!startMatchModal.roomId || !startMatchModal.roomPassword) {
+      alert('Room ID and Password are required to start the match.');
+      return;
+    }
+    await updateStatus(startMatchModal.match._id, 'LIVE', { 
+      roomId: startMatchModal.roomId, 
+      roomPassword: startMatchModal.roomPassword 
+    });
+    setStartMatchModal({ isOpen: false, match: null, roomId: '', roomPassword: '' });
   };
 
   return (
@@ -107,19 +132,28 @@ export default function AdminMatches() {
               <div className="flex gap-2">
                 {match.status === 'UPCOMING' && (
                   <button 
-                    onClick={() => updateStatus(match._id, 'LIVE')}
+                    onClick={() => setStartMatchModal({ isOpen: true, match, roomId: '', roomPassword: '' })}
                     className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani"
                   >
                     <Play className="w-4 h-4" /> Start Match
                   </button>
                 )}
                 {match.status === 'LIVE' && (
-                  <button 
-                    onClick={() => updateStatus(match._id, 'RESULT_PROCESSING')}
-                    className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani"
-                  >
-                    <CheckSquare className="w-4 h-4" /> Mark Completed
-                  </button>
+                  <>
+                    <button 
+                      onClick={() => updateStatus(match._id, 'UPCOMING')}
+                      className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani"
+                      title="Revert to Upcoming"
+                    >
+                      <Square className="w-4 h-4" /> Stop Match
+                    </button>
+                    <button 
+                      onClick={() => updateStatus(match._id, 'RESULT_PROCESSING')}
+                      className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani"
+                    >
+                      <CheckSquare className="w-4 h-4" /> Mark Completed
+                    </button>
+                  </>
                 )}
                 {match.status === 'RESULT_PROCESSING' && (
                   <button 
@@ -148,6 +182,60 @@ export default function AdminMatches() {
         onClose={() => setIsModalOpen(false)} 
         onSubmit={handleCreateMatch} 
       />
+
+      {startMatchModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#111518] border border-white/10 w-full max-w-md shadow-2xl">
+            <form onSubmit={handleStartMatch}>
+              <div className="p-6 pb-0">
+                <h2 className="font-rajdhani text-xl font-bold text-white tracking-widest uppercase">Start Match: M{startMatchModal.match?.matchNumber}</h2>
+                <p className="text-[#B8C0C2] mt-2 text-sm">Enter the Room ID and Password. This will be emailed to all approved squads immediately.</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block font-rajdhani text-[#FF6A00] font-bold uppercase tracking-widest mb-1">Room ID</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="\d*"
+                    value={startMatchModal.roomId}
+                    onChange={(e) => setStartMatchModal({ ...startMatchModal, roomId: e.target.value.replace(/\D/g, '') })}
+                    required
+                    className="w-full bg-black/50 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-[#FF6A00] transition-colors"
+                    placeholder="Enter Room ID"
+                  />
+                </div>
+                <div>
+                  <label className="block font-rajdhani text-[#FF6A00] font-bold uppercase tracking-widest mb-1">Room Password</label>
+                  <input
+                    type="text"
+                    value={startMatchModal.roomPassword}
+                    onChange={(e) => setStartMatchModal({ ...startMatchModal, roomPassword: e.target.value })}
+                    required
+                    className="w-full bg-black/50 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-[#FF6A00] transition-colors"
+                    placeholder="Enter Room Password"
+                  />
+                </div>
+              </div>
+              <div className="p-6 flex justify-end gap-3 pt-0">
+                <button
+                  type="button"
+                  onClick={() => setStartMatchModal({ isOpen: false, match: null, roomId: '', roomPassword: '' })}
+                  className="px-6 py-2 text-sm font-bold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-red-600 hover:bg-red-500 text-white px-6 py-2 text-sm font-bold uppercase tracking-widest transition-colors"
+                >
+                  Start & Send Emails
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
