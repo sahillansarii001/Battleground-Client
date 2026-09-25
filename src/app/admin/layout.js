@@ -35,12 +35,10 @@ export default function AdminLayout({ children }) {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
         
         <div className="flex flex-col items-center mb-8 pb-6 border-b border-white/10 relative z-10">
-          <div className="hud-border p-1 mb-3 bg-[#111518]">
-            <div className="h-16 w-16 bg-[#FF6A00]/10 flex items-center justify-center">
-              <span className="font-rajdhani text-[#FF6A00] font-bold text-2xl">AD</span>
-            </div>
+          <div className="hud-border p-1 mb-3 bg-[#111518] overflow-hidden rounded-full w-20 h-20 flex items-center justify-center">
+            <img src={user.profilePhoto || "/BattlegroundLogo.png"} alt="Admin" className="w-full h-full object-cover" />
           </div>
-          <span className="font-rajdhani text-white font-bold text-lg tracking-widest uppercase">{user.email?.split('@')[0]}</span>
+          <span className="font-rajdhani text-white font-bold text-lg tracking-widest uppercase">{user.name || user.email?.split('@')[0]}</span>
           <span className="font-orbitron text-[#FF6A00] text-[9px] font-bold mt-2 uppercase px-3 py-1 border border-[#FF6A00]/30 tracking-widest">Global Admin</span>
         </div>
         

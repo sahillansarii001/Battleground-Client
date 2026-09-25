@@ -36,10 +36,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between px-6">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-black tracking-tight text-white flex items-center gap-3 group">
-              <div className="w-8 h-8 bg-[#FF6A00] rounded flex items-center justify-center transform group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,106,0,0.4)]">
-                <span className="text-white font-bold text-lg">B</span>
-              </div>
-              <span className="hidden sm:block tracking-widest">BATTLEGROUNDS</span>
+              <img src="/BattlegroundLogo.png" alt="Battlegrounds" className="h-8 w-auto md:h-10 object-contain transform group-hover:scale-105 transition-transform drop-shadow-[0_0_15px_rgba(255,106,0,0.4)]" />
             </Link>
           </div>
           

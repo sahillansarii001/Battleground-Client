@@ -90,10 +90,7 @@ export default function ForgotPassword() {
         
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#FF6A00] flex items-center justify-center transform skew-x-[-10deg]">
-              <span className="text-black font-bold text-2xl transform skew-x-10">B</span>
-            </div>
-            <span className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest">BATTLEGROUNDS</span>
+            <img src="/BattlegroundLogo.png" alt="Battlegrounds" className="h-12 w-auto md:h-16 object-contain transform skew-x-[-10deg]" />
           </Link>
           
           <h1 className="font-rajdhani text-6xl font-bold text-white uppercase leading-[0.9] mt-20">

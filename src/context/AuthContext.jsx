@@ -49,6 +49,18 @@ export function AuthProvider({ children }) {
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
         }
+      } else if (currentUser && currentUser.role === 'ADMIN') {
+        const res = await api.get('/admin/profile');
+        if (res.success && res.data) {
+          const updatedUser = {
+            ...currentUser,
+            name: res.data.name,
+            email: res.data.email,
+            profilePhoto: res.data.profilePhoto
+          };
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
       }
     } catch (error) {
       console.error('Failed to load user', error);

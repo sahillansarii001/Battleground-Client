@@ -1,7 +1,29 @@
 "use client";
-import { BookOpen, ShieldAlert, Crosshair, AlertTriangle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BookOpen, ShieldAlert, Crosshair, AlertTriangle, Download } from 'lucide-react';
+import api from '@/lib/api';
 
 export default function Rules() {
+  const [rulebook, setRulebook] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRulebook();
+  }, []);
+
+  const fetchRulebook = async () => {
+    try {
+      const res = await api.get('/rules/current');
+      if (res.success) {
+        setRulebook(res.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch rulebook', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <div className="text-center mb-10">
@@ -10,55 +32,26 @@ export default function Rules() {
         <p className="font-orbitron text-[10px] text-[#B8C0C2] uppercase tracking-widest mt-2 border-t border-b border-white/10 py-2 inline-block">Standard Operating Procedures</p>
       </div>
 
-      <div className="bg-[#111518]/90 border border-white/10 p-8 hover:border-[#FF6A00]/30 transition-colors group">
-        <h3 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-3">
-          <ShieldAlert className="w-6 h-6 text-[#FF6A00] group-hover:text-white transition-colors" />
-          1. General Code of Conduct
-        </h3>
-        <ul className="space-y-3 font-inter text-[#B8C0C2] text-sm pl-9 list-disc">
-          <li>All players must respect tournament officials, staff, and other participants.</li>
-          <li>Toxic behavior, hate speech, or harassment in all-chat or comms will result in immediate squad disqualification.</li>
-          <li>Account sharing is strictly prohibited. The registered BGMI ID must match the in-game participant.</li>
-        </ul>
-      </div>
-
-      <div className="bg-[#111518]/90 border border-white/10 p-8 hover:border-[#FF6A00]/30 transition-colors group">
-        <h3 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-3">
-          <Crosshair className="w-6 h-6 text-[#FF6A00] group-hover:text-white transition-colors" />
-          2. In-Game Rules
-        </h3>
-        <ul className="space-y-3 font-inter text-[#B8C0C2] text-sm pl-9 list-disc">
-          <li>Emulators are strictly prohibited. iPads and Tablets are not allowed unless specified in the tier rules.</li>
-          <li>Use of third-party software, GFX tools, aimbots, or wallhacks will lead to a permanent ban.</li>
-          <li>Teaming up with other squads in a match will result in a zero-point deduction and a ban.</li>
-        </ul>
-      </div>
-
-      <div className="bg-[#111518]/90 border border-white/10 p-8 hover:border-red-500/30 transition-colors group relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-        <h3 className="font-rajdhani text-2xl font-bold text-red-500 uppercase tracking-widest mb-4 flex items-center gap-3">
-          <AlertTriangle className="w-6 h-6 text-red-500 group-hover:animate-pulse" />
-          3. Scoring System
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-          <div className="bg-[#080A0C] border border-white/5 p-4 text-center">
-            <span className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">WWCD</span>
-            <span className="font-rajdhani text-2xl font-bold text-white">10 Pts</span>
+      {loading ? (
+        <div className="text-white text-center py-10 font-rajdhani text-xl">Loading Rulebook...</div>
+      ) : rulebook && rulebook.content ? (
+        <div className="bg-[#111518]/90 border border-[#FF6A00]/50 p-8 mb-8 border-l-4 border-l-[#FF6A00]">
+          <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+            <h3 className="font-rajdhani text-3xl font-bold text-white uppercase tracking-widest">{rulebook.title || 'Official Rulebook'}</h3>
+            <span className="font-orbitron text-xs text-[#B8C0C2] uppercase">Version: {rulebook.version}</span>
           </div>
-          <div className="bg-[#080A0C] border border-white/5 p-4 text-center">
-            <span className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">2nd Place</span>
-            <span className="font-rajdhani text-2xl font-bold text-white">6 Pts</span>
-          </div>
-          <div className="bg-[#080A0C] border border-white/5 p-4 text-center">
-            <span className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">3rd Place</span>
-            <span className="font-rajdhani text-2xl font-bold text-white">5 Pts</span>
-          </div>
-          <div className="bg-[#080A0C] border border-[#FF6A00]/20 p-4 text-center border-b-2 border-b-[#FF6A00]">
-            <span className="block font-orbitron text-[9px] text-[#FF6A00] uppercase mb-1">Per Kill</span>
-            <span className="font-rajdhani text-2xl font-bold text-white">1 Pt</span>
+          <div className="prose prose-invert prose-orange max-w-none font-inter text-[#B8C0C2]">
+            {/* Simple split by newline, you can add a real markdown parser like react-markdown if installed */}
+            {rulebook.content.split('\n').map((line, i) => (
+              <p key={i} className="mb-2">{line}</p>
+            ))}
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-[#111518]/90 border border-white/10 p-6 text-center text-[#B8C0C2] mb-8">
+          No official rulebook has been published yet.
+        </div>
+      )}
     </div>
   );
 }
