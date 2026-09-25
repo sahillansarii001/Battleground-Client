@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
 import Link from 'next/link';
-import { AlertOctagon, Terminal, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { AlertOctagon, Terminal, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAuth();
@@ -20,11 +20,6 @@ export default function Login() {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('PLEASE ENTER A VALID EMAIL ADDRESS (E.G. @GMAIL.COM)');
-      return;
-    }
-
-    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) {
-      setError('PASSWORD MUST CONTAIN AT LEAST ONE CAPITAL LETTER, ONE NUMBER, AND ONE SPECIAL CHARACTER');
       return;
     }
 
@@ -78,7 +73,11 @@ export default function Login() {
       <div className="w-full lg:w-2/3 h-full relative flex flex-col items-center justify-center p-4 sm:p-8 md:p-12 z-10">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
         
-        <div className="w-full max-w-md flex flex-col justify-center relative z-10">
+        <Link href="/" className="absolute top-6 left-6 sm:top-8 sm:left-8 z-50 flex items-center gap-2 font-orbitron text-[10px] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-widest">
+          <ArrowLeft className="w-4 h-4" /> Abort Auth
+        </Link>
+
+        <div className="w-full max-w-md flex flex-col justify-center relative z-10 mt-8 lg:mt-0">
           
           <div className="mb-8 shrink-0 flex items-center gap-3">
             <Terminal className="w-6 h-6 text-[#FF6A00]" />
@@ -154,12 +153,12 @@ export default function Login() {
             </form>
             
             <div className="mt-6 pt-6 border-t border-white/5 text-center">
-              <p className="font-inter text-xs text-[#B8C0C2]">
-                Squad not registered?{' '}
-                <Link href="/register" className="text-[#FF6A00] hover:text-white transition-colors font-bold uppercase tracking-widest ml-1">
-                  Initialize deployment
-                </Link>
+              <p className="font-inter text-xs text-[#B8C0C2] mb-3">
+                Squad not registered yet?
               </p>
+              <Link href="/register" className="w-full flex justify-center py-3 px-4 bg-[#111518] hover:bg-[#FF6A00] text-[#B8C0C2] hover:text-black border border-white/10 font-rajdhani text-lg font-bold uppercase tracking-widest transition-colors transform skew-x-[-10deg]">
+                <span className="transform skew-x-10">Initialize Deployment</span>
+              </Link>
             </div>
           </div>
         </div>

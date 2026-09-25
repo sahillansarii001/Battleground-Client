@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { 
   UploadCloud, CheckCircle2, AlertOctagon, Target, 
   ChevronRight, ChevronLeft, Image as ImageIcon,
-  User, Mail, Users, Gamepad2, Crosshair, ChevronDown
+  User, Mail, Users, Gamepad2, Crosshair, ChevronDown, ArrowLeft
 } from 'lucide-react';
 
 const CustomSelect = ({ value, onChange, options, icon: Icon, placeholder, className="py-3 px-3 bg-[#080A0C] border-white/10 text-sm" }) => {
@@ -241,7 +241,11 @@ export default function Register() {
       <div className="w-full lg:w-2/3 min-h-screen lg:min-h-0 lg:h-full relative flex flex-col items-center justify-center py-12 px-4 sm:px-8 md:px-12 z-10">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
         
-        <div className="w-full max-w-3xl flex flex-col h-full justify-center">
+        <Link href="/" className="absolute top-6 left-6 sm:top-8 sm:left-8 z-50 flex items-center gap-2 font-orbitron text-[10px] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-widest">
+          <ArrowLeft className="w-4 h-4" /> Abort Registry
+        </Link>
+
+        <div className="w-full max-w-3xl flex flex-col h-full justify-center mt-8 lg:mt-0">
           
           {/* Step Indicator (Compact) */}
           <div className="mb-8 relative shrink-0">

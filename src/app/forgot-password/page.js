@@ -4,7 +4,7 @@ import { useState } from 'react';
 import api from '@/lib/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AlertOctagon, Mail, KeyRound, Lock, CheckCircle2, Terminal } from 'lucide-react';
+import { AlertOctagon, Mail, KeyRound, Lock, CheckCircle2, Terminal, ArrowLeft } from 'lucide-react';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -116,7 +116,11 @@ export default function ForgotPassword() {
       <div className="w-full lg:w-2/3 h-full relative flex flex-col items-center justify-center p-4 sm:p-8 md:p-12 z-10">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
         
-        <div className="w-full max-w-md flex flex-col justify-center relative z-10">
+        <Link href="/login" className="absolute top-6 left-6 sm:top-8 sm:left-8 z-50 flex items-center gap-2 font-orbitron text-[10px] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-widest">
+          <ArrowLeft className="w-4 h-4" /> Abort Recovery
+        </Link>
+
+        <div className="w-full max-w-md flex flex-col justify-center relative z-10 mt-8 lg:mt-0">
           
           <div className="mb-8 shrink-0 flex items-center gap-3">
             <Terminal className="w-6 h-6 text-[#FF6A00]" />

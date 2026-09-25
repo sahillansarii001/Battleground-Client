@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    router.push('/login');
+    router.push('/');
   }, [router]);
 
   useEffect(() => {
