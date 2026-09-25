@@ -202,7 +202,7 @@ export default function Register() {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#080A0C] flex overflow-hidden selection:bg-[#FF6A00]/30 selection:text-[#FF6A00]">
+    <div className="min-h-screen lg:h-screen w-full bg-[#080A0C] flex flex-col lg:flex-row overflow-x-hidden lg:overflow-hidden selection:bg-[#FF6A00]/30 selection:text-[#FF6A00]">
       
       {/* LEFT SPLIT - BRANDING (Hidden on mobile) */}
       <div className="hidden lg:flex w-1/3 relative bg-[#111518] flex-col justify-between p-12 border-r border-white/5 shadow-2xl z-20">
@@ -234,7 +234,7 @@ export default function Register() {
       </div>
 
       {/* RIGHT SPLIT - FORM AREA */}
-      <div className="w-full lg:w-2/3 h-full relative flex flex-col items-center justify-center p-4 sm:p-8 md:p-12 z-10">
+      <div className="w-full lg:w-2/3 min-h-screen lg:min-h-0 lg:h-full relative flex flex-col items-center justify-center py-12 px-4 sm:px-8 md:px-12 z-10">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
         
         <div className="w-full max-w-3xl flex flex-col h-full justify-center">
@@ -333,9 +333,9 @@ export default function Register() {
             {/* Step 2: Operators (Compact Grid Layout) */}
             {step === 2 && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-4 lg:max-h-[50vh] lg:overflow-y-auto pr-2 custom-scrollbar">
                   {players.map((player, index) => (
-                    <div key={index} className="bg-[#080A0C] border border-white/5 p-4 relative group">
+                    <div key={index} className="bg-[#080A0C] border border-white/5 p-3 sm:p-4 relative group">
                       <div className="absolute top-0 left-0 w-1 h-full bg-[#FF6A00] opacity-50"></div>
                       
                       <div className="flex justify-between items-center mb-3">
@@ -345,7 +345,7 @@ export default function Register() {
                       </div>
                       
                       {/* Responsive Grid for inputs to save vertical space */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                         <input 
                           type="text" placeholder="LEGAL NAME" value={player.playerName} onChange={e => handlePlayerChange(index, 'playerName', e.target.value)} 
                           className="w-full bg-[#111518] border border-white/5 px-3 py-2 text-white font-inter text-xs placeholder-[#4A5568] focus:border-[#FF6A00] focus:outline-none" 
@@ -405,7 +405,7 @@ export default function Register() {
                 {/* Operators Summary */}
                 <div className="bg-[#080A0C] border border-white/5 p-4">
                   <h4 className="font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-3 pb-2 border-b border-white/5 tracking-widest">Operators Locked: {players.length}</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[30vh] overflow-y-auto custom-scrollbar pr-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:max-h-[30vh] lg:overflow-y-auto custom-scrollbar pr-2">
                     {players.map((p, i) => (
                       <div key={i} className="flex items-center justify-between bg-[#111518] p-2 border-l-2 border-[#FF6A00]">
                         <div>
