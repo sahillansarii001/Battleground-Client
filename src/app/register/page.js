@@ -135,6 +135,10 @@ export default function Register() {
         setError(`OPERATOR 0${i + 1} DATA INCOMPLETE`);
         return false;
       }
+      if (!/^\d{10}$/.test(players[i].bgmiId)) {
+        setError(`OPERATOR 0${i + 1} BGMI ID MUST BE EXACTLY 10 DIGITS`);
+        return false;
+      }
     }
     setError('');
     return true;

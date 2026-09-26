@@ -82,6 +82,14 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    for (const p of formData.players) {
+      if (!/^\d{10}$/.test(p.bgmiId)) {
+        setError(`BGMI ID for ${p.inGameName || 'operator'} must be exactly 10 digits.`);
+        return;
+      }
+    }
+    
     setLoading(true);
     setError(null);
     try {
