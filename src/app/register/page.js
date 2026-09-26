@@ -364,7 +364,13 @@ export default function Register() {
                           className="w-full bg-[#111518] border border-white/5 px-3 py-2 text-white font-inter text-xs placeholder-[#4A5568] focus:border-[#FF6A00] focus:outline-none" 
                         />
                         <input 
-                          type="text" placeholder="BGMI ID" value={player.bgmiId} onChange={e => handlePlayerChange(index, 'bgmiId', e.target.value)} 
+                          type="text" placeholder="BGMI ID" value={player.bgmiId} 
+                          onChange={e => {
+                            const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            if (val.length <= 10) {
+                              handlePlayerChange(index, 'bgmiId', val);
+                            }
+                          }}
                           className="w-full bg-[#111518] border border-white/5 px-3 py-2 text-white font-inter text-xs placeholder-[#4A5568] focus:border-[#FF6A00] focus:outline-none" 
                         />
                         <CustomSelect 

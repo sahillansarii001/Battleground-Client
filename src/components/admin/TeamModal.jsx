@@ -186,7 +186,15 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">BGMI ID</label>
-                          <input type="text" value={player.bgmiId || ''} onChange={(e) => handlePlayerChange(index, 'bgmiId', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" />
+                          <input type="text" value={player.bgmiId || ''} 
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, '');
+                              if (val.length <= 10) {
+                                handlePlayerChange(index, 'bgmiId', val);
+                              }
+                            }} 
+                            className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00]" 
+                          />
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">Role</label>
