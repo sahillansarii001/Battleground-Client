@@ -42,6 +42,7 @@ export function AuthProvider({ children }) {
         if (res.success && res.data && res.data.team) {
           const updatedUser = {
             ...currentUser,
+            email: res.data.team.email || currentUser.email,
             teamName: res.data.team.teamName,
             teamType: res.data.team.teamType,
             logo: res.data.team.logo
@@ -98,10 +99,8 @@ export function AuthProvider({ children }) {
     } else if (!user && pathname.startsWith('/admin')) {
       router.replace('/login');
     } else if (user && user.role === 'TEAM_USER') {
-      if (pathname === '/login' || pathname.startsWith('/admin')) {
+      if (pathname === '/login' || pathname.startsWith('/admin') || pathname === '/panel/change-password') {
         router.replace('/panel/dashboard');
-      } else if (user.mustChangePassword && pathname !== '/panel/change-password') {
-        router.replace('/panel/change-password');
       }
     } else if (user && user.role === 'ADMIN') {
       if (pathname === '/login' || pathname.startsWith('/panel')) {
@@ -113,16 +112,14 @@ export function AuthProvider({ children }) {
   const login = async (token, userData) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    
+    // Wait for the full user data (including team/logo) to be fetched and set in state
+    await refreshUser();
     
     if (userData.role === 'ADMIN') {
       router.push('/admin/dashboard');
     } else {
-      if (userData.mustChangePassword) {
-        router.push('/panel/change-password');
-      } else {
-        router.push('/panel/dashboard');
-      }
+      router.push('/panel/dashboard');
     }
   };
 

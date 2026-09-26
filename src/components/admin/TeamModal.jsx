@@ -129,6 +129,7 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                   className="w-full bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none"
                 >
                   <option value="SQUAD">SQUAD</option>
+                  <option value="TRIO">TRIO</option>
                   <option value="DUO">DUO</option>
                   <option value="SOLO">SOLO</option>
                 </select>

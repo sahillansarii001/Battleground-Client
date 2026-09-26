@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
 import { Shield, Lock, LogOut, Camera, Save, AlertOctagon, CheckCircle2, Eye, EyeOff } from 'lucide-react';
@@ -10,11 +10,20 @@ export default function PanelSettings() {
   
   // Team info state
   const [teamName, setTeamName] = useState(user?.teamName || '');
+  const [email, setEmail] = useState(user?.email || '');
   const [logoPreview, setLogoPreview] = useState(user?.logo?.url || null);
   const [logoFile, setLogoFile] = useState(null);
   const [teamUpdating, setTeamUpdating] = useState(false);
   const [teamMessage, setTeamMessage] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (user) {
+      setTeamName(user.teamName || '');
+      setEmail(user.email || '');
+      setLogoPreview(user.logo?.url || null);
+    }
+  }, [user]);
 
   // Password state
   const [oldPassword, setOldPassword] = useState('');
@@ -49,6 +58,7 @@ export default function PanelSettings() {
       // Create FormData if uploading a file
       const formData = new FormData();
       formData.append('teamName', teamName);
+      formData.append('email', email);
       if (logoFile) {
         formData.append('logo', logoFile);
       }
@@ -158,7 +168,7 @@ export default function PanelSettings() {
               />
             </div>
 
-            {/* Team Name */}
+            {/* Team Name and Email */}
             <div className="flex-1 space-y-4 w-full">
               <div>
                 <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase mb-2">Designation (Team Name)</label>
@@ -169,6 +179,18 @@ export default function PanelSettings() {
                   onChange={(e) => setTeamName(e.target.value)}
                   className="w-full px-4 py-3 bg-[#080A0C] border border-white/10 text-white font-inter text-sm focus:outline-none focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00]"
                   placeholder="ENTER SQUAD NAME"
+                />
+              </div>
+              
+              <div>
+                <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase mb-2">Communication (Email Address)</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#080A0C] border border-white/10 text-white font-inter text-sm focus:outline-none focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00]"
+                  placeholder="ENTER EMAIL ADDRESS"
                 />
               </div>
             </div>
