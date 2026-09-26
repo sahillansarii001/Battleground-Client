@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Save, CheckCircle, Upload, ArrowLeft, ChevronDown, ChevronUp, Edit, X } from 'lucide-react';
+import { Save, ArrowLeft, ChevronDown, ChevronUp, Edit, X } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function MatchResults() {
@@ -52,6 +52,7 @@ export default function MatchResults() {
           })) || []
         }));
         setScores(existingScores);
+        setIsEditing(false);
       } else {
         // Init empty scores for all approved teams
         const initScores = teamsRes.data
@@ -67,6 +68,7 @@ export default function MatchResults() {
             playerScores: t.players?.map(p => ({ playerId: p._id, kills: 0 })) || []
           }));
         setScores(initScores);
+        setIsEditing(true); // First time entering results — start in edit mode
       }
     } catch (error) {
       console.error(error);
@@ -136,36 +138,19 @@ export default function MatchResults() {
     });
   };
 
-  const saveDraft = async () => {
+  const saveResults = async () => {
     try {
+      // Save scores first
       await api.post(`/matches/${id}/results`, { scores });
-      alert('Draft saved successfully');
+      // Then verify + publish in one go
+      await api.put(`/matches/${id}/results/verify`);
+      await api.put(`/matches/${id}/results/publish`);
+      alert('Results saved & published to scoreboard!');
       setIsEditing(false);
       fetchData();
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const verifyResults = async () => {
-    try {
-      await api.put(`/matches/${id}/results/verify`);
-      alert('Results verified');
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const publishResults = async () => {
-    try {
-      // Need to find the winner for the match payload if needed, or backend can do it.
-      // We will just call publish.
-      await api.put(`/matches/${id}/results/publish`);
-      alert('Results published globally');
-      router.push('/admin/matches');
-    } catch (error) {
-      console.error(error);
+      alert('Failed to save results');
     }
   };
 
@@ -188,49 +173,20 @@ export default function MatchResults() {
           </h2>
           <p className="font-inter text-xs text-[#B8C0C2] mt-1">Status: {match.resultStatus || 'DRAFT'}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {isEditing ? (
             <>
-              <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+              <button onClick={() => { setIsEditing(false); fetchData(); }} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-white/30 text-[#B8C0C2] hover:text-white px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
                 <X className="w-4 h-4" /> Cancel
               </button>
-              <button onClick={saveDraft} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                <Save className="w-4 h-4" /> Save Changes
+              <button onClick={saveResults} className="flex items-center gap-2 bg-[#FF6A00] hover:bg-[#FF6A00]/80 text-black px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                <Save className="w-4 h-4" /> Save
               </button>
             </>
           ) : (
-            <>
-              {(!match.resultStatus || match.resultStatus === 'DRAFT') && (
-                <>
-                  <button onClick={saveDraft} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                    <Save className="w-4 h-4" /> Save Draft
-                  </button>
-                  <button onClick={verifyResults} className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                    <CheckCircle className="w-4 h-4" /> Verify
-                  </button>
-                </>
-              )}
-              {match.resultStatus === 'VERIFIED' && (
-                <>
-                  <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                    <Edit className="w-4 h-4" /> Edit
-                  </button>
-                  <button onClick={publishResults} className="flex items-center gap-2 bg-[#39B54A] hover:bg-[#39B54A]/80 text-white px-6 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                    <Upload className="w-4 h-4" /> Publish Globally
-                  </button>
-                </>
-              )}
-              {match.resultStatus === 'PUBLISHED' && (
-                <>
-                  <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                    <Edit className="w-4 h-4" /> Edit
-                  </button>
-                  <div className="bg-[#39B54A]/20 text-[#39B54A] px-6 py-2 font-bold uppercase tracking-widest font-rajdhani border border-[#39B54A]/50">
-                    PUBLISHED
-                  </div>
-                </>
-              )}
-            </>
+            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+              <Edit className="w-4 h-4" /> Edit
+            </button>
           )}
         </div>
       </div>
@@ -251,7 +207,7 @@ export default function MatchResults() {
             {scores.map(score => {
               const team = teams.find(t => t._id === score.teamId);
               if (!team) return null;
-              const isReadOnly = (match.resultStatus === 'VERIFIED' || match.resultStatus === 'PUBLISHED') && !isEditing;
+              const isReadOnly = !isEditing;
               const isExpanded = expandedTeamId === score.teamId;
               
               return (
@@ -277,7 +233,7 @@ export default function MatchResults() {
                       <span className="block w-full px-2 py-1 text-center text-[#39B54A] font-bold">{score.placementPoints}</span>
                     </td>
                     <td className="p-4">
-                      <span className="block w-full px-2 py-1 text-center text-white">{score.kills}</span>
+                      <input type="number" min="0" disabled={isReadOnly} value={score.kills} onChange={(e) => handleScoreChange(score.teamId, 'kills', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
                     </td>
                     <td className="p-4">
                       <span className="block w-full px-2 py-1 text-center text-red-400 font-bold">{score.killPoints}</span>
