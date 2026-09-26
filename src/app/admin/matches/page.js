@@ -162,7 +162,7 @@ export default function AdminMatches() {
       ) : (
         <div className="grid gap-4">
           {matches.map(match => (
-            <div key={match._id} className="bg-[#111518] border border-white/10 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div key={match._id} className="bg-[#111518] border border-white/10 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-[#FF6A00] font-bold font-rajdhani text-xl">M{match.matchNumber}</span>
@@ -184,7 +184,7 @@ export default function AdminMatches() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {match.status === 'UPCOMING' && (
                   <>
                     <button 

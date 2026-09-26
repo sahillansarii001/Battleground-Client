@@ -32,7 +32,7 @@ export default function MatchSchedule() {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between items-end mb-12 border-b border-white/10 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 border-b border-white/10 pb-6">
         <div>
           <h2 className="font-rajdhani text-4xl font-bold text-white uppercase tracking-tight">Match Center</h2>
           <p className="font-inter text-[#B8C0C2] mt-2">Upcoming drops and room intelligence.</p>
