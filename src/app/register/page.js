@@ -131,7 +131,7 @@ export default function Register() {
 
   const validateStep2 = () => {
     for (let i = 0; i < players.length; i++) {
-      if (!players[i].playerName || !players[i].inGameName || !players[i].bgmiId || (formData.teamType === 'SQUAD' && !players[i].role)) {
+      if (!players[i].playerName || !players[i].inGameName || !players[i].bgmiId || !players[i].role) {
         setError(`OPERATOR 0${i + 1} DATA INCOMPLETE`);
         return false;
       }
@@ -363,22 +363,18 @@ export default function Register() {
                           type="text" placeholder="BGMI ID" value={player.bgmiId} onChange={e => handlePlayerChange(index, 'bgmiId', e.target.value)} 
                           className="w-full bg-[#111518] border border-white/5 px-3 py-2 text-white font-inter text-xs placeholder-[#4A5568] focus:border-[#FF6A00] focus:outline-none" 
                         />
-                        {formData.teamType === 'SQUAD' ? (
-                          <CustomSelect 
-                            value={player.role} 
-                            onChange={e => handlePlayerChange(index, 'role', e.target.value)} 
-                            placeholder="ROLE"
-                            className="bg-[#111518] border-white/5 px-3 py-2 text-xs"
-                            options={[
-                              { value: 'IGL', label: 'IGL' },
-                              { value: 'Assaulter', label: 'Assaulter' },
-                              { value: 'Sniper', label: 'Sniper' },
-                              { value: 'Support', label: 'Support' }
-                            ]}
-                          />
-                        ) : (
-                          <div className="hidden lg:block"></div>
-                        )}
+                        <CustomSelect 
+                          value={player.role} 
+                          onChange={e => handlePlayerChange(index, 'role', e.target.value)} 
+                          placeholder="ROLE"
+                          className="bg-[#111518] border-white/5 px-3 py-2 text-xs"
+                          options={[
+                            { value: 'IGL', label: 'IGL' },
+                            { value: 'Assaulter', label: 'Assaulter' },
+                            { value: 'Sniper', label: 'Sniper' },
+                            { value: 'Support', label: 'Support' }
+                          ]}
+                        />
                       </div>
                     </div>
                   ))}
@@ -417,7 +413,7 @@ export default function Register() {
                           <div className="font-rajdhani font-bold text-white uppercase text-sm">{p.inGameName} {i === 0 && <span className="text-[#FF6A00] ml-1 text-[10px]">[IGL]</span>}</div>
                           <div className="font-inter text-[10px] text-[#B8C0C2] uppercase mt-0.5">ID: {p.bgmiId}</div>
                         </div>
-                        {formData.teamType === 'SQUAD' && p.role && (
+                        {p.role && (
                           <div className="font-orbitron text-[8px] text-[#FF6A00] border border-[#FF6A00]/20 px-1.5 py-0.5 bg-[#FF6A00]/5">
                             {p.role}
                           </div>

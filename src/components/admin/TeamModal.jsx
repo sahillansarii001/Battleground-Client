@@ -32,7 +32,7 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
         teamName: team.teamName || '',
         email: team.email || '',
         teamType: team.teamType || 'SQUAD',
-        players: team.players || []
+        players: (team.players || []).map(p => ({ ...p, role: p.role || 'ASSAULTER' }))
       });
     }
   }, [team]);

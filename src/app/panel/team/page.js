@@ -51,11 +51,9 @@ export default function Team() {
                   </h4>
                   <p className="font-inter text-[10px] text-[#B8C0C2] uppercase mt-1">LEGAL: {player.playerName}</p>
                 </div>
-                {player.role && (
-                  <div className="font-orbitron text-[9px] text-[#B8C0C2] uppercase border border-white/10 px-2 py-1 bg-[#080A0C]">
-                    {player.role}
-                  </div>
-                )}
+                <div className="font-orbitron text-[9px] text-[#B8C0C2] uppercase border border-white/10 px-2 py-1 bg-[#080A0C]">
+                  {player.role || 'ASSAULTER'}
+                </div>
               </div>
               
               <div className="bg-[#080A0C] px-3 py-2 border border-white/5 flex justify-between items-center">
