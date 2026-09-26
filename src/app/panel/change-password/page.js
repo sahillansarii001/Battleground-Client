@@ -116,6 +116,13 @@ export default function ChangePassword() {
                   className="w-full pl-12 pr-12 py-4 bg-[#080A0C]/80 border border-white/10 text-white font-inter text-base focus:outline-none focus:border-[#FF6A00] focus:bg-[#080A0C] transition-all focus:shadow-[0_0_15px_rgba(255,106,0,0.2)]"
                   placeholder="••••••••"
                 />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-[#B8C0C2] hover:text-[#FF6A00] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
             
