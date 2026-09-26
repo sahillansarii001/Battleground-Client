@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Save, Trash2, Key, Edit, Shield } from 'lucide-react';
 import api from '@/lib/api';
 
@@ -13,6 +13,7 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const operatorsRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,6 +62,12 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
         }
       }
       setFormData({ ...formData, teamType: value, players: newPlayers });
+      
+      setTimeout(() => {
+        if (operatorsRef.current) {
+          operatorsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -72,17 +79,6 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
     setFormData({ ...formData, players: newPlayers });
   };
 
-  const addPlayer = () => {
-    setFormData({
-      ...formData,
-      players: [...formData.players, { inGameName: '', playerName: '', bgmiId: '', role: 'ASSAULTER' }]
-    });
-  };
-
-  const removePlayer = (index) => {
-    const newPlayers = formData.players.filter((_, i) => i !== index);
-    setFormData({ ...formData, players: newPlayers });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,12 +156,9 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
               </div>
             </div>
 
-            <div className="pt-6 border-t border-white/10">
+            <div className="pt-6 border-t border-white/10" ref={operatorsRef}>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-rajdhani text-xl font-bold text-white uppercase tracking-widest">Operators</h3>
-                <button type="button" onClick={addPlayer} className="text-[#FF6A00] hover:text-white font-orbitron text-[10px] uppercase tracking-widest flex items-center gap-1 border border-[#FF6A00]/30 px-3 py-1 bg-[#FF6A00]/10">
-                  + Add Operator
-                </button>
               </div>
 
               {formData.players.length === 0 ? (
@@ -174,9 +167,6 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                 <div className="space-y-4">
                   {formData.players.map((player, index) => (
                     <div key={index} className="bg-[#080A0C] border border-white/5 p-4 relative pr-10">
-                      <button type="button" onClick={() => removePlayer(index)} className="absolute right-4 top-4 text-red-500 hover:text-white">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">IGN</label>
