@@ -26,13 +26,6 @@ export default function AdminRules() {
       if (res?.success) {
         const data = res.data || [];
         setRulebooks(data);
-        const published = data.find(r => r.status === 'PUBLISHED');
-        if (published) {
-          setCurrentRulebook(published);
-          setTitle(published.title || '');
-          setVersion(published.version || '');
-          setContent(published.content || '');
-        }
       }
     } catch (error) {
       console.error("Failed to fetch rulebooks:", error?.message || error);
@@ -70,6 +63,7 @@ export default function AdminRules() {
     setTitle(rulebook.title);
     setVersion(rulebook.version);
     setContent(rulebook.content);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
