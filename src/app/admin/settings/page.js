@@ -8,6 +8,7 @@ export default function AdminSettings() {
   const { user, login } = useAuth();
   const [communityLink, setCommunityLink] = useState('');
   const [prizePool, setPrizePool] = useState('50K');
+  const [mapsStr, setMapsStr] = useState('ERANGEL, MIRAMAR, SANHOK, VIKENDI');
   
   // Points System State
   const [perKill, setPerKill] = useState(1);
@@ -46,6 +47,7 @@ export default function AdminSettings() {
         if (settingsRes.success && settingsRes.data) {
           setCommunityLink(settingsRes.data.communityLink || '');
           setPrizePool(settingsRes.data.prizePool || '50K');
+          if (settingsRes.data.maps) setMapsStr(settingsRes.data.maps.join(', '));
           if (settingsRes.data.pointsSystem) {
             setPerKill(settingsRes.data.pointsSystem.perKill ?? 1);
             if (settingsRes.data.pointsSystem.placementPoints) {
@@ -80,7 +82,8 @@ export default function AdminSettings() {
         pointsSystem: {
           perKill: Number(perKill),
           placementPoints
-        }
+        },
+        maps: mapsStr.split(',').map(m => m.trim()).filter(Boolean)
       });
       setSuccessMsg('System settings saved successfully');
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -355,6 +358,30 @@ export default function AdminSettings() {
                   onChange={(e) => setPrizePool(e.target.value)}
                   placeholder="e.g. 50K" 
                   className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20 max-w-[200px]" 
+                />
+                <button 
+                  onClick={handleSaveSettings}
+                  disabled={savingSettings}
+                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
+                >
+                  <div className="transform skew-x-10 flex items-center gap-2">
+                    {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    Save Settings
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            
+            <div className="pt-4 border-t border-white/5">
+              <label className="block font-orbitron text-[10px] text-[#B8C0C2] uppercase tracking-widest mb-2">Available Maps (Comma separated)</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={mapsStr}
+                  onChange={(e) => setMapsStr(e.target.value)}
+                  placeholder="e.g. ERANGEL, MIRAMAR" 
+                  className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20" 
                 />
                 <button 
                   onClick={handleSaveSettings}

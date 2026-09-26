@@ -8,8 +8,11 @@ import { useRouter } from 'next/navigation';
 export default function AdminMatches() {
   const [matches, setMatches] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMatch, setEditingMatch] = useState(null);
   const [startMatchModal, setStartMatchModal] = useState({ isOpen: false, match: null, roomId: '', roomPassword: '' });
   const [loading, setLoading] = useState(true);
+  const [availableMaps, setAvailableMaps] = useState(['ERANGEL', 'MIRAMAR', 'SANHOK', 'VIKENDI']);
+  const [errorMsg, setErrorMsg] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -29,26 +32,37 @@ export default function AdminMatches() {
 
   const fetchMatches = async () => {
     try {
-      const res = await api.get('/matches');
-      if (res.success) {
-        setMatches(res.data);
+      const [matchesRes, settingsRes] = await Promise.all([
+        api.get('/matches'),
+        api.get('/admin/settings')
+      ]);
+      
+      if (matchesRes.success) {
+        setMatches(matchesRes.data);
+      }
+      if (settingsRes.success && settingsRes.data?.maps) {
+        setAvailableMaps(settingsRes.data.maps);
       }
     } catch (error) {
-      console.error('Failed to fetch matches', error);
+      console.error('Failed to fetch data', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateMatch = async (matchData) => {
+    setErrorMsg('');
     try {
       const res = await api.post('/matches', matchData);
       if (res.success) {
         setIsModalOpen(false);
         fetchMatches();
+      } else {
+        setErrorMsg(res.message);
       }
     } catch (error) {
-      console.error('Failed to create match', error);
+      // error is already the response data from api.js interceptor
+      setErrorMsg(error.message || 'Failed to create match');
     }
   };
 
@@ -58,6 +72,32 @@ export default function AdminMatches() {
       fetchMatches();
     } catch (error) {
       console.error('Failed to update status', error);
+    }
+  };
+
+  const handleUpdateMatch = async (matchData) => {
+    setErrorMsg('');
+    try {
+      const res = await api.put(`/matches/${editingMatch._id}`, matchData);
+      if (res.success) {
+        setEditingMatch(null);
+        fetchMatches();
+      } else {
+        setErrorMsg(res.message);
+      }
+    } catch (error) {
+      // error is already the response data from api.js interceptor
+      setErrorMsg(error.message || 'Failed to update match');
+    }
+  };
+
+  const handleDeleteMatch = async (id) => {
+    if (!confirm('Are you sure you want to delete this match?')) return;
+    try {
+      await api.delete(`/matches/${id}`);
+      fetchMatches();
+    } catch (error) {
+      console.error('Failed to delete match', error);
     }
   };
 
@@ -83,7 +123,10 @@ export default function AdminMatches() {
           <p className="font-inter text-xs text-[#B8C0C2] mt-1">Schedule and generate tournament brackets.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setErrorMsg('');
+            setIsModalOpen(true);
+          }}
           className="flex items-center gap-2 bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold text-lg px-6 py-2 uppercase tracking-widest transition-colors transform skew-x-[-10deg]"
         >
           <span className="transform skew-x-10 flex items-center gap-2">
@@ -129,14 +172,26 @@ export default function AdminMatches() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 {match.status === 'UPCOMING' && (
-                  <button 
-                    onClick={() => setStartMatchModal({ isOpen: true, match, roomId: '', roomPassword: '' })}
-                    className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani"
-                  >
-                    <Play className="w-4 h-4" /> Start Match
-                  </button>
+                  <>
+                    <button 
+                      onClick={() => {
+                        setErrorMsg('');
+                        setEditingMatch(match);
+                      }}
+                      className="p-2 text-[#B8C0C2] hover:text-white bg-white/5 hover:bg-white/10 transition-colors"
+                      title="Edit Match"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                    </button>
+                    <button 
+                      onClick={() => setStartMatchModal({ isOpen: true, match, roomId: '', roomPassword: '' })}
+                      className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani ml-2"
+                    >
+                      <Play className="w-4 h-4" /> Start Match
+                    </button>
+                  </>
                 )}
                 {match.status === 'LIVE' && (
                   <>
@@ -171,6 +226,14 @@ export default function AdminMatches() {
                     View Results
                   </button>
                 )}
+                <div className="h-6 w-px bg-white/10 mx-1"></div>
+                <button 
+                  onClick={() => handleDeleteMatch(match._id)}
+                  className="p-2 text-red-500 hover:text-white hover:bg-red-600 bg-red-500/10 transition-colors"
+                  title="Delete Match"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </button>
               </div>
             </div>
           ))}
@@ -179,9 +242,28 @@ export default function AdminMatches() {
 
       <MatchModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => {
+          setErrorMsg('');
+          setIsModalOpen(false);
+        }} 
         onSubmit={handleCreateMatch} 
+        availableMaps={availableMaps}
+        errorMsg={errorMsg}
       />
+
+      {editingMatch && (
+        <MatchModal 
+          isOpen={true}
+          onClose={() => {
+            setErrorMsg('');
+            setEditingMatch(null);
+          }}
+          onSubmit={handleUpdateMatch}
+          initialData={editingMatch}
+          availableMaps={availableMaps}
+          errorMsg={errorMsg}
+        />
+      )}
 
       {startMatchModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
