@@ -128,7 +128,7 @@ export default function Leaderboard() {
                     {isExpanded && (
                       <tr className="bg-[#1A2023]/50 border-b border-white/5">
                         <td colSpan="7" className="p-4">
-                          <div className="flex flex-wrap gap-4 pl-[4.5rem]">
+                          <div className="flex flex-wrap gap-4 pl-18">
                             {team.players && team.players.length > 0 ? (
                               team.players.map(p => (
                                 <div key={p._id} className="bg-[#080A0C] border border-white/10 p-3 flex items-center gap-4">

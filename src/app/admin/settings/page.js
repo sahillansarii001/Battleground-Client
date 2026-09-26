@@ -357,7 +357,7 @@ export default function AdminSettings() {
                   value={prizePool}
                   onChange={(e) => setPrizePool(e.target.value)}
                   placeholder="e.g. 50K" 
-                  className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20 max-w-[200px]" 
+                  className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20 max-w-50" 
                 />
                 <button 
                   onClick={handleSaveSettings}
@@ -422,7 +422,7 @@ export default function AdminSettings() {
             </div>
 
             {/* Separator */}
-            <div className="h-16 w-[1px] bg-white/10 hidden sm:block"></div>
+            <div className="h-16 w-px bg-white/10 hidden sm:block"></div>
 
             {/* Placement Points */}
             {Array.from({ length: 4 }, (_, i) => i + 1).map((pos) => (

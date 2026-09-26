@@ -198,6 +198,9 @@ export default function ForgotPassword() {
                   <button type="button" onClick={() => handleSendOtp(null)} className="font-orbitron text-[9px] text-[#FF6A00] hover:text-white uppercase tracking-widest transition-colors">
                     Resend Code
                   </button>
+                  <p className="mt-4 text-[10px] text-[#B8C0C2] font-inter text-center">
+                    Note: OTPs expire in 5 minutes. If the email doesn't appear in your inbox, please verify your spam or junk folder.
+                  </p>
                 </div>
               </form>
             )}

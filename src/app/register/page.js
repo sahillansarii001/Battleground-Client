@@ -72,6 +72,12 @@ export default function Register() {
   const [success, setSuccess] = useState(false);
   const [preview, setPreview] = useState(null);
 
+  // OTP Verification States
+  const [otpSent, setOtpSent] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [otpInput, setOtpInput] = useState('');
+  const [verifying, setVerifying] = useState(false);
+
   const getPlayerCount = (type) => {
     switch(type) {
       case 'SOLO': return 1;
@@ -116,6 +122,49 @@ export default function Register() {
     }
   };
 
+  const handleSendOtp = async () => {
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setError("PLEASE ENTER A VALID EMAIL ADDRESS TO VERIFY");
+      return;
+    }
+    setError('');
+    setVerifying(true);
+    try {
+      const res = await api.post('/auth/send-registration-otp', { email: formData.email });
+      if (res.success) {
+        setOtpSent(true);
+      } else {
+        setError(res.message);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpInput) {
+      setError("PLEASE ENTER THE OTP");
+      return;
+    }
+    setError('');
+    setVerifying(true);
+    try {
+      const res = await api.post('/auth/verify-otp', { email: formData.email, otp: otpInput });
+      if (res.success) {
+        setEmailVerified(true);
+        setOtpSent(false); // Hide OTP input after success
+      } else {
+        setError(res.message);
+      }
+    } catch (err) {
+      setError(err.message || 'Invalid OTP');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const validateStep1 = () => {
     if (!formData.teamName || !formData.email || !formData.logo) {
       setError("ALL SQUAD INTEL REQUIRED (INCLUDING INSIGNIA)");
@@ -123,6 +172,10 @@ export default function Register() {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError("PLEASE ENTER A VALID EMAIL ADDRESS (E.G. @GMAIL.COM)");
+      return false;
+    }
+    if (!emailVerified) {
+      setError("PLEASE VERIFY YOUR EMAIL TO PROCEED");
       return false;
     }
     setError('');
@@ -300,8 +353,60 @@ export default function Register() {
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <Mail className="h-4 w-4 text-[#B8C0C2]" />
                         </div>
-                        <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full pl-10 pr-3 py-3 bg-[#080A0C] border border-white/10 text-white font-inter text-sm focus:outline-none focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00]" placeholder="ADMIN@SQUAD.COM" />
+                        <input 
+                          type="email" 
+                          value={formData.email} 
+                          onChange={e => {
+                            setFormData({...formData, email: e.target.value});
+                            setEmailVerified(false);
+                            setOtpSent(false);
+                          }} 
+                          disabled={emailVerified}
+                          className={`w-full pl-10 pr-3 py-3 bg-[#080A0C] border ${emailVerified ? 'border-[#39B54A] text-[#39B54A]' : 'border-white/10 text-white'} font-inter text-sm focus:outline-none focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00] transition-colors`} 
+                          placeholder="ADMIN@SQUAD.COM" 
+                        />
+                        {emailVerified && (
+                          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <CheckCircle2 className="h-4 w-4 text-[#39B54A]" />
+                          </div>
+                        )}
                       </div>
+                      
+                      {!emailVerified && !otpSent && (
+                        <button 
+                          type="button" 
+                          onClick={handleSendOtp}
+                          disabled={verifying || !formData.email}
+                          className="mt-2 w-full bg-[#111518] hover:bg-white/10 border border-white/10 text-[#FF6A00] font-orbitron text-[10px] uppercase tracking-widest py-2 transition-colors disabled:opacity-50"
+                        >
+                          {verifying ? 'SENDING...' : 'VERIFY EMAIL'}
+                        </button>
+                      )}
+
+                      {!emailVerified && otpSent && (
+                        <div className="mt-2">
+                          <div className="flex gap-2">
+                            <input 
+                              type="text" 
+                              value={otpInput} 
+                              onChange={e => setOtpInput(e.target.value)} 
+                              placeholder="ENTER OTP" 
+                              className="w-full px-3 py-2 bg-[#080A0C] border border-white/10 text-white font-inter text-sm focus:outline-none focus:border-[#FF6A00]" 
+                            />
+                            <button 
+                              type="button" 
+                              onClick={handleVerifyOtp}
+                              disabled={verifying || !otpInput}
+                              className="bg-[#FF6A00] text-black hover:bg-white px-4 py-2 font-rajdhani font-bold text-sm uppercase tracking-widest transition-colors transform skew-x-[-10deg] disabled:opacity-50"
+                            >
+                              <span className="transform skew-x-10">{verifying ? '...' : 'CONFIRM'}</span>
+                            </button>
+                          </div>
+                          <p className="mt-2 text-[10px] text-[#B8C0C2] font-inter">
+                            Note: OTPs expire in 5 minutes. If the email doesn't appear in your inbox, please verify your spam or junk folder.
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div>
