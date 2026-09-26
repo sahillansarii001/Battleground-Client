@@ -94,13 +94,23 @@ export default function AdminMatches() {
   };
 
   const handleDeleteMatch = async (id) => {
-    if (!confirm('Are you sure you want to delete this match?')) return;
-    try {
-      await api.delete(`/matches/${id}`);
-      fetchMatches();
-    } catch (error) {
-      console.error('Failed to delete match', error);
-    }
+    setActionModal({
+      isOpen: true,
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this match? This action cannot be undone.',
+      confirmText: 'Delete',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/matches/${id}`);
+          fetchMatches();
+          setActionModal({ isOpen: false });
+        } catch (error) {
+          console.error('Failed to delete match', error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to delete match', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
   const handleStartMatch = async (e) => {

@@ -50,14 +50,23 @@ export default function AdminAnnouncements() {
   };
 
   const deleteAnnouncement = async (id) => {
-    try {
-      if (!window.confirm("Delete this broadcast?")) return;
-      await api.delete(`/announcements/${id}`);
-      fetchAnnouncements();
-    } catch (error) {
-      console.error('Failed to delete', error);
-      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to delete', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
-    }
+    setActionModal({
+      isOpen: true,
+      title: 'Confirm Deletion',
+      message: 'Delete this broadcast?',
+      confirmText: 'Delete',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/announcements/${id}`);
+          fetchAnnouncements();
+          setActionModal({ isOpen: false });
+        } catch (error) {
+          console.error('Failed to delete', error);
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to delete', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
+      }
+    });
   };
 
   return (

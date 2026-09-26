@@ -55,6 +55,9 @@ export default function AdminRules() {
         setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Rulebook draft saved!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
       }
       setEditingId(null);
+      setTitle('');
+      setVersion('');
+      setContent('');
       fetchRulebooks();
     } catch (error) {
       setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to save draft", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
@@ -70,19 +73,28 @@ export default function AdminRules() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this rulebook?")) return;
-    try {
-      await api.delete(`/rules/${id}`);
-      if (editingId === id) {
-        setEditingId(null);
-        setTitle('');
-        setVersion('');
-        setContent('');
+    setActionModal({
+      isOpen: true,
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this rulebook?',
+      confirmText: 'Delete',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/rules/${id}`);
+          if (editingId === id) {
+            setEditingId(null);
+            setTitle('');
+            setVersion('');
+            setContent('');
+          }
+          fetchRulebooks();
+          setActionModal({ isOpen: false });
+        } catch (error) {
+          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to delete rulebook", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+        }
       }
-      fetchRulebooks();
-    } catch (error) {
-      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to delete rulebook", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
-    }
+    });
   };
 
   const handlePublish = async (id) => {

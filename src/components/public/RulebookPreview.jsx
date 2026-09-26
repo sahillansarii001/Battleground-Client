@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { BookOpen } from "lucide-react";
 import Link from 'next/link';
 import api from '@/lib/api';
+import ReactMarkdown from 'react-markdown';
 
 export default function RulebookPreview() {
   const [rulebook, setRulebook] = useState(null);
@@ -15,7 +16,7 @@ export default function RulebookPreview() {
   const fetchRulebook = async () => {
     try {
       const res = await api.get('/rules/current');
-      if (res.success) {
+      if (res?.success) {
         setRulebook(res.data);
       }
     } catch (error) {
@@ -46,10 +47,22 @@ export default function RulebookPreview() {
         </h3>
         <span className="font-orbitron text-xs text-[#B8C0C2] uppercase">Version: {rulebook.version}</span>
       </div>
-      <div className="prose prose-invert prose-orange max-w-none font-inter text-[#B8C0C2] max-h-96 overflow-y-auto custom-scrollbar pr-4">
-        {rulebook.content.split('\n').map((line, i) => (
-          <p key={i} className="mb-2">{line}</p>
-        ))}
+      <div className="font-inter text-[#B8C0C2] max-h-96 overflow-y-auto custom-scrollbar pr-4">
+        <ReactMarkdown
+          components={{
+            h1: ({node, ...props}) => <h1 className="text-3xl font-rajdhani text-white font-bold uppercase mt-8 mb-4 border-b border-white/10 pb-2" {...props} />,
+            h2: ({node, ...props}) => <h2 className="text-2xl font-rajdhani text-white font-bold uppercase mt-6 mb-3" {...props} />,
+            h3: ({node, ...props}) => <h3 className="text-xl font-rajdhani text-[#FF6A00] font-bold uppercase mt-5 mb-2" {...props} />,
+            p: ({node, ...props}) => <p className="mb-4 text-[#B8C0C2] leading-relaxed" {...props} />,
+            ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 text-[#B8C0C2] space-y-2" {...props} />,
+            ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 text-[#B8C0C2] space-y-2" {...props} />,
+            li: ({node, ...props}) => <li className="" {...props} />,
+            strong: ({node, ...props}) => <strong className="text-white font-bold" {...props} />,
+            blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-[#FF6A00] pl-4 italic bg-white/5 py-2 my-4" {...props} />
+          }}
+        >
+          {rulebook.content}
+        </ReactMarkdown>
       </div>
       <div className="mt-6 pt-4 border-t border-white/10 text-center">
         <Link href="/rules" className="font-orbitron text-[10px] text-[#FF6A00] hover:text-white tracking-widest uppercase transition-colors">
