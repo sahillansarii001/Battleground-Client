@@ -3,6 +3,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Save, ArrowLeft, ChevronDown, ChevronUp, Edit, X } from 'lucide-react';
 import api from '@/lib/api';
+import ActionModal from '@/components/admin/ActionModal';
 
 export default function MatchResults() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export default function MatchResults() {
   const [loading, setLoading] = useState(true);
   const [expandedTeamId, setExpandedTeamId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [actionModal, setActionModal] = useState({ isOpen: false });
 
   useEffect(() => {
     fetchData();
@@ -145,12 +147,12 @@ export default function MatchResults() {
       // Then verify + publish in one go
       await api.put(`/matches/${id}/results/verify`);
       await api.put(`/matches/${id}/results/publish`);
-      alert('Results saved & published to scoreboard!');
+      setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Results saved & published to scoreboard!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
       setIsEditing(false);
       fetchData();
     } catch (error) {
       console.error(error);
-      alert('Failed to save results');
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to save results', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
@@ -280,6 +282,19 @@ export default function MatchResults() {
           </tbody>
         </table>
       </div>
+
+      {actionModal.isOpen && (
+        <ActionModal
+          isOpen={actionModal.isOpen}
+          onClose={() => setActionModal({ isOpen: false })}
+          title={actionModal.title}
+          message={actionModal.message}
+          confirmText={actionModal.confirmText}
+          isDanger={actionModal.isDanger}
+          onConfirm={actionModal.onConfirm}
+          isAlert={actionModal.isAlert}
+        />
+      )}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function Rules() {
   const fetchRulebook = async () => {
     try {
       const res = await api.get('/rules/current');
-      if (res.success) {
+      if (res?.success) {
         setRulebook(res.data);
       }
     } catch (error) {
@@ -60,72 +60,8 @@ export default function Rules() {
               </div>
             </div>
           ) : (
-            <div className="space-y-10">
-              <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-                <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
-                  <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">01</span>
-                </div>
-                <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-                  General Guidelines
-                </h3>
-                <p className="font-inter text-[#B8C0C2] leading-relaxed">
-                  All teams must maintain a high level of professionalism. Any form of cheating, hacking, exploiting glitches, or stream sniping will result in an immediate and permanent ban. Teams are responsible for their own internet connections.
-                </p>
-              </section>
-
-              <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-                <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
-                  <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">02</span>
-                </div>
-                <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-                  Registration & Eligibility
-                </h3>
-                <p className="font-inter text-[#B8C0C2] leading-relaxed">
-                  Teams must consist of exactly the number of players specified by their team type (Solo = 1, Duo = 2, Squad = 4). Roster changes are not permitted once a tournament stage has commenced without admin approval.
-                </p>
-              </section>
-
-              <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-                <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
-                  <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">03</span>
-                </div>
-                <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-                  Match Procedures
-                </h3>
-                <p className="font-inter text-[#B8C0C2] leading-relaxed">
-                  Room IDs and Passwords will be shared through the Team Panel exactly 15 minutes before the match start time. Teams failing to join the lobby before the start time will forfeit their placement.
-                </p>
-              </section>
-
-              <section className="relative pl-8 border-l-2 border-[#FF6A00]">
-                <div className="absolute -left-2.75 top-1 w-5 h-5 bg-[#080A0C] border-2 border-[#FF6A00] flex items-center justify-center transform rotate-45">
-                  <span className="font-orbitron text-[8px] text-[#FF6A00] transform -rotate-45 font-bold">04</span>
-                </div>
-                <h3 className="font-rajdhani text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-                  Scoring Matrix
-                </h3>
-                <div className="bg-white/5 border border-white/10 p-5 mt-4">
-                  <p className="font-inter text-[#B8C0C2] mb-4">
-                    Standard competitive point systems apply. Points are distributed as follows:
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-orbitron text-[10px] tracking-widest text-white uppercase">
-                    <div className="bg-[#111518] p-3 border border-white/5 text-center"><span className="text-[#FF6A00] block text-xl mb-1">10</span> WWCD (1st)</div>
-                    <div className="bg-[#111518] p-3 border border-white/5 text-center"><span className="text-white block text-xl mb-1">6</span> 2nd Place</div>
-                    <div className="bg-[#111518] p-3 border border-white/5 text-center"><span className="text-white block text-xl mb-1">5</span> 3rd Place</div>
-                    <div className="bg-[#111518] p-3 border border-[#39B54A]/30 text-center"><span className="text-[#39B54A] block text-xl mb-1">1</span> Per Kill</div>
-                  </div>
-                </div>
-              </section>
-              
-              <section className="bg-red-950/20 border border-red-500/20 p-6 relative">
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-red-500 to-transparent"></div>
-                <h3 className="font-rajdhani text-2xl font-bold text-red-500 mb-2 flex items-center gap-3 uppercase">
-                  <AlertOctagon className="w-6 h-6" /> Disqualification Criteria
-                </h3>
-                <p className="font-inter text-red-200/70 text-sm">
-                  Using third-party plugins, triggers, emulators, or playing on iPads during mobile-only tournaments will result in immediate disqualification of the entire squad.
-                </p>
-              </section>
+            <div className="bg-[#111518]/90 border border-white/10 p-12 text-center text-[#B8C0C2] font-rajdhani text-xl tracking-widest uppercase mb-8">
+              No official rulebook has been published by the admins yet.
             </div>
           )}
           

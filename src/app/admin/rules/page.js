@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { BookOpen, Edit, Save, Upload } from 'lucide-react';
+import { BookOpen, Edit, Save, Upload, Trash2, X } from 'lucide-react';
 import api from '@/lib/api';
+import ActionModal from '@/components/admin/ActionModal';
 
 export default function AdminRules() {
   const [rulebooks, setRulebooks] = useState([]);
@@ -12,6 +13,8 @@ export default function AdminRules() {
   const [version, setVersion] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
+  const [actionModal, setActionModal] = useState({ isOpen: false });
 
   useEffect(() => {
     fetchRulebooks();
@@ -20,40 +23,76 @@ export default function AdminRules() {
   const fetchRulebooks = async () => {
     try {
       const res = await api.get('/rules');
-      if (res.success) {
-        setRulebooks(res.data);
-        const published = res.data.find(r => r.status === 'PUBLISHED');
+      if (res?.success) {
+        const data = res.data || [];
+        setRulebooks(data);
+        const published = data.find(r => r.status === 'PUBLISHED');
         if (published) {
           setCurrentRulebook(published);
-          setTitle(published.title);
-          setVersion(published.version);
-          setContent(published.content);
+          setTitle(published.title || '');
+          setVersion(published.version || '');
+          setContent(published.content || '');
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch rulebooks:", error?.message || error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSaveDraft = async () => {
+    if (!title || !version || !content) {
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Please fill in all fields (Title, Version, and Content) before saving.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      return;
+    }
     try {
-      await api.post('/rules', { title, version, content });
-      alert('Rulebook draft saved!');
+      if (editingId) {
+        await api.put(`/rules/${editingId}`, { title, version, content });
+        setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Rulebook updated!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      } else {
+        await api.post('/rules', { title, version, content });
+        setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Rulebook draft saved!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      }
+      setEditingId(null);
       fetchRulebooks();
     } catch (error) {
-      console.error(error);
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to save draft", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      console.error(error?.message || error);
+    }
+  };
+
+  const handleEdit = (rulebook) => {
+    setEditingId(rulebook._id);
+    setTitle(rulebook.title);
+    setVersion(rulebook.version);
+    setContent(rulebook.content);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this rulebook?")) return;
+    try {
+      await api.delete(`/rules/${id}`);
+      if (editingId === id) {
+        setEditingId(null);
+        setTitle('');
+        setVersion('');
+        setContent('');
+      }
+      fetchRulebooks();
+    } catch (error) {
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to delete rulebook", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
   const handlePublish = async (id) => {
     try {
       await api.put(`/rules/${id}/publish`);
-      alert('Rulebook published globally!');
+      setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Rulebook published globally!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
       fetchRulebooks();
     } catch (error) {
-      console.error(error);
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error?.message || "Failed to publish rulebook", confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      console.error(error?.message || error);
     }
   };
 
@@ -70,12 +109,27 @@ export default function AdminRules() {
           <p className="font-inter text-xs text-[#B8C0C2] mt-1">Modify the Standard Operating Procedures.</p>
         </div>
         <div className="flex gap-2">
+          {editingId && (
+            <button 
+              onClick={() => {
+                setEditingId(null);
+                setTitle('');
+                setVersion('');
+                setContent('');
+              }}
+              className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-white/30 text-[#B8C0C2] font-rajdhani font-bold text-lg px-6 py-2 uppercase tracking-widest transition-colors transform skew-x-[-10deg]"
+            >
+              <span className="transform skew-x-10 flex items-center gap-2">
+                <X className="w-5 h-5" /> Cancel
+              </span>
+            </button>
+          )}
           <button 
             onClick={handleSaveDraft}
             className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-[#FF6A00] text-white font-rajdhani font-bold text-lg px-6 py-2 uppercase tracking-widest transition-colors transform skew-x-[-10deg]"
           >
             <span className="transform skew-x-10 flex items-center gap-2">
-              <Save className="w-5 h-5" /> Save Draft
+              <Save className="w-5 h-5" /> {editingId ? 'Update Draft' : 'Save Draft'}
             </span>
           </button>
         </div>
@@ -128,6 +182,14 @@ export default function AdminRules() {
                     </span>
                     <h4 className="font-rajdhani text-lg font-bold text-white mt-1 uppercase">{rulebook.title || 'Untitled'} v{rulebook.version}</h4>
                   </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleEdit(rulebook)} className="text-[#B8C0C2] hover:text-white transition-colors" title="Edit Rulebook">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(rulebook._id)} className="text-red-500/70 hover:text-red-500 transition-colors" title="Delete Rulebook">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
                 <div className="text-xs text-[#B8C0C2] font-inter mb-4">
                   Created: {new Date(rulebook.createdAt).toLocaleDateString()}
@@ -148,6 +210,19 @@ export default function AdminRules() {
           </div>
         </div>
       </div>
+      
+      {actionModal.isOpen && (
+        <ActionModal
+          isOpen={actionModal.isOpen}
+          onClose={() => setActionModal({ isOpen: false })}
+          title={actionModal.title}
+          message={actionModal.message}
+          confirmText={actionModal.confirmText}
+          isDanger={actionModal.isDanger}
+          onConfirm={actionModal.onConfirm}
+          isAlert={actionModal.isAlert}
+        />
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import LiveMatchCenter from "@/components/public/LiveMatchCenter";
 import MatchSchedule from "@/components/public/MatchSchedule";
 import BattleRankings from "@/components/public/BattleRankings";
 import PublicStats from "@/components/public/PublicStats";
+import RulebookPreview from "@/components/public/RulebookPreview";
 
 export default function Home() {
   return (
@@ -92,6 +93,18 @@ export default function Home() {
       <section id="matches" className="py-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MatchSchedule />
+        </div>
+      </section>
+
+      {/* 15.5 OFFICIAL RULEBOOK */}
+      <section id="rulebook" className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-rajdhani text-4xl font-bold text-white uppercase tracking-tight mb-2">Official Rulebook</h2>
+            <div className="w-24 h-1 bg-[#FF6A00] mx-auto transform skew-x-[-20deg]"></div>
+          </div>
+          
+          <RulebookPreview />
         </div>
       </section>
 

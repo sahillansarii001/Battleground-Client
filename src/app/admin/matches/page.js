@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Swords, Plus, Calendar, Play, CheckSquare, Square } from 'lucide-react';
 import api from '@/lib/api';
 import MatchModal from '@/components/admin/MatchModal';
+import ActionModal from '@/components/admin/ActionModal';
 import { useRouter } from 'next/navigation';
 
 export default function AdminMatches() {
@@ -13,6 +14,7 @@ export default function AdminMatches() {
   const [loading, setLoading] = useState(true);
   const [availableMaps, setAvailableMaps] = useState(['ERANGEL', 'MIRAMAR', 'SANHOK', 'VIKENDI']);
   const [errorMsg, setErrorMsg] = useState('');
+  const [actionModal, setActionModal] = useState({ isOpen: false });
   const router = useRouter();
 
   useEffect(() => {
@@ -104,7 +106,7 @@ export default function AdminMatches() {
   const handleStartMatch = async (e) => {
     e.preventDefault();
     if (!startMatchModal.roomId || !startMatchModal.roomPassword) {
-      alert('Room ID and Password are required to start the match.');
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Room ID and Password are required to start the match.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
       return;
     }
     await updateStatus(startMatchModal.match._id, 'LIVE', { 
@@ -317,6 +319,19 @@ export default function AdminMatches() {
             </form>
           </div>
         </div>
+      )}
+
+      {actionModal.isOpen && (
+        <ActionModal
+          isOpen={actionModal.isOpen}
+          onClose={() => setActionModal({ isOpen: false })}
+          title={actionModal.title}
+          message={actionModal.message}
+          confirmText={actionModal.confirmText}
+          isDanger={actionModal.isDanger}
+          onConfirm={actionModal.onConfirm}
+          isAlert={actionModal.isAlert}
+        />
       )}
     </div>
   );

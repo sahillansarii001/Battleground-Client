@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { Megaphone, Plus, Send } from 'lucide-react';
 import api from '@/lib/api';
 import AnnouncementModal from '@/components/admin/AnnouncementModal';
+import ActionModal from '@/components/admin/ActionModal';
 
 export default function AdminAnnouncements() {
   const [announcements, setAnnouncements] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [actionModal, setActionModal] = useState({ isOpen: false });
 
   useEffect(() => {
     fetchAnnouncements();
@@ -54,7 +56,7 @@ export default function AdminAnnouncements() {
       fetchAnnouncements();
     } catch (error) {
       console.error('Failed to delete', error);
-      alert(error.response?.data?.message || 'Failed to delete');
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: error.response?.data?.message || 'Failed to delete', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
@@ -118,6 +120,19 @@ export default function AdminAnnouncements() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateAnnouncement}
       />
+
+      {actionModal.isOpen && (
+        <ActionModal
+          isOpen={actionModal.isOpen}
+          onClose={() => setActionModal({ isOpen: false })}
+          title={actionModal.title}
+          message={actionModal.message}
+          confirmText={actionModal.confirmText}
+          isDanger={actionModal.isDanger}
+          onConfirm={actionModal.onConfirm}
+          isAlert={actionModal.isAlert}
+        />
+      )}
     </div>
   );
 }

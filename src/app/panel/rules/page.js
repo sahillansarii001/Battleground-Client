@@ -14,7 +14,7 @@ export default function Rules() {
   const fetchRulebook = async () => {
     try {
       const res = await api.get('/rules/current');
-      if (res.success) {
+      if (res?.success) {
         setRulebook(res.data);
       }
     } catch (error) {
