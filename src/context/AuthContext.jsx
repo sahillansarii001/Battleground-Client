@@ -45,6 +45,7 @@ export function AuthProvider({ children }) {
             email: res.data.team.email || currentUser.email,
             teamName: res.data.team.teamName,
             teamType: res.data.team.teamType,
+            status: res.data.team.status,
             logo: res.data.team.logo,
             players: res.data.players || []
           };
@@ -91,8 +92,14 @@ export function AuthProvider({ children }) {
     };
   }, [refreshUser, logout]);
 
+  const [mounted, setMounted] = useState(false);
+  
   useEffect(() => {
-    if (isLoading) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || isLoading) return;
     
     // Auth Guards
     if (!user && pathname.startsWith('/panel')) {
@@ -108,7 +115,7 @@ export function AuthProvider({ children }) {
         router.replace('/admin/dashboard');
       }
     }
-  }, [user, isLoading, pathname, router]);
+  }, [user, isLoading, pathname, router, mounted]);
 
   const login = async (token, userData) => {
     localStorage.setItem('token', token);
