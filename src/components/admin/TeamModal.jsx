@@ -38,8 +38,32 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
 
   if (!isOpen) return null;
 
+  const getPlayerCount = (type) => {
+    switch(type) {
+      case 'SOLO': return 1;
+      case 'DUO': return 2;
+      case 'TRIO': return 3;
+      case 'SQUAD': return 4;
+      default: return 4;
+    }
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'teamType') {
+      const count = getPlayerCount(value);
+      let newPlayers = [...formData.players];
+      if (newPlayers.length > count) {
+        newPlayers = newPlayers.slice(0, count);
+      } else {
+        while (newPlayers.length < count) {
+          newPlayers.push({ inGameName: '', playerName: '', bgmiId: '', role: 'ASSAULTER' });
+        }
+      }
+      setFormData({ ...formData, teamType: value, players: newPlayers });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handlePlayerChange = (index, field, value) => {

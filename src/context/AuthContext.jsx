@@ -45,7 +45,8 @@ export function AuthProvider({ children }) {
             email: res.data.team.email || currentUser.email,
             teamName: res.data.team.teamName,
             teamType: res.data.team.teamType,
-            logo: res.data.team.logo
+            logo: res.data.team.logo,
+            players: res.data.players || []
           };
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
