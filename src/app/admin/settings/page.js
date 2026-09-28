@@ -328,7 +328,7 @@ export default function AdminSettings() {
           <div className="space-y-4">
             <div>
               <label className="block font-orbitron text-[10px] text-[#B8C0C2] uppercase tracking-widest mb-2">Telegram Community Link (Sent in Approval Email)</label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <input 
                   type="url" 
                   value={communityLink}
@@ -339,7 +339,7 @@ export default function AdminSettings() {
                 <button 
                   onClick={handleSaveSettings}
                   disabled={savingSettings}
-                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
+                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 py-2 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
                 >
                   <div className="transform skew-x-10 flex items-center gap-2">
                     {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -351,18 +351,18 @@ export default function AdminSettings() {
             
             <div className="pt-4 border-t border-white/5">
               <label className="block font-orbitron text-[10px] text-[#B8C0C2] uppercase tracking-widest mb-2">Tournament Prize Pool (e.g. "50K", "1 Lakh", "Medals")</label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <input 
                   type="text" 
                   value={prizePool}
                   onChange={(e) => setPrizePool(e.target.value)}
                   placeholder="e.g. 50K" 
-                  className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20 max-w-50" 
+                  className="flex-1 bg-[#080A0C] border border-white/10 text-white font-inter text-sm px-4 py-2 focus:border-[#FF6A00] focus:outline-none placeholder-white/20" 
                 />
                 <button 
                   onClick={handleSaveSettings}
                   disabled={savingSettings}
-                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
+                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 py-2 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
                 >
                   <div className="transform skew-x-10 flex items-center gap-2">
                     {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -375,7 +375,7 @@ export default function AdminSettings() {
             
             <div className="pt-4 border-t border-white/5">
               <label className="block font-orbitron text-[10px] text-[#B8C0C2] uppercase tracking-widest mb-2">Available Maps (Comma separated)</label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <input 
                   type="text" 
                   value={mapsStr}
@@ -386,7 +386,7 @@ export default function AdminSettings() {
                 <button 
                   onClick={handleSaveSettings}
                   disabled={savingSettings}
-                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
+                  className="bg-[#FF6A00] hover:bg-white text-black font-rajdhani font-bold px-6 py-2 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform skew-x-[-10deg]"
                 >
                   <div className="transform skew-x-10 flex items-center gap-2">
                     {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
