@@ -17,7 +17,7 @@ export default function AdminScores() {
     try {
       const res = await api.get('/matches');
       if (res.success) {
-        setMatches(res.data.filter(m => m.status === 'COMPLETED'));
+        setMatches(res.data.filter(m => m.status === 'COMPLETED' || m.status === 'RESULT_PROCESSING'));
       }
     } catch (error) {
       console.error(error);

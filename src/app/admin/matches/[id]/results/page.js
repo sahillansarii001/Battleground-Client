@@ -140,19 +140,33 @@ export default function MatchResults() {
     });
   };
 
-  const saveResults = async () => {
+  const saveDraft = async () => {
     try {
-      // Save scores first
       await api.post(`/matches/${id}/results`, { scores });
-      // Then verify + publish in one go
-      await api.put(`/matches/${id}/results/verify`);
-      await api.put(`/matches/${id}/results/publish`);
-      setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Results saved & published to scoreboard!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      setActionModal({ isOpen: true, isAlert: true, title: 'Saved', message: 'Results saved as Draft. They are NOT visible on the public scoreboard yet.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
       setIsEditing(false);
       fetchData();
     } catch (error) {
       console.error(error);
       setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to save results', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+    }
+  };
+
+  const saveAndPublish = async () => {
+    try {
+      await api.post(`/matches/${id}/results`, { scores });
+      await api.put(`/matches/${id}/results/verify`);
+      await api.put(`/matches/${id}/results/publish`);
+      
+      // Also update match status to COMPLETED if it was RESULT_PROCESSING
+      await api.put(`/matches/${id}/status`, { status: 'COMPLETED' });
+
+      setActionModal({ isOpen: true, isAlert: true, title: 'Success', message: 'Results saved & published to the Global Scoreboard!', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      setIsEditing(false);
+      fetchData();
+    } catch (error) {
+      console.error(error);
+      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to publish results', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
@@ -181,8 +195,11 @@ export default function MatchResults() {
               <button onClick={() => { setIsEditing(false); fetchData(); }} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-white/30 text-[#B8C0C2] hover:text-white px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
                 <X className="w-4 h-4" /> Cancel
               </button>
-              <button onClick={saveResults} className="flex items-center gap-2 bg-[#FF6A00] hover:bg-[#FF6A00]/80 text-black px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
-                <Save className="w-4 h-4" /> Save
+              <button onClick={saveDraft} className="flex items-center gap-2 bg-[#FF6A00]/20 hover:bg-[#FF6A00]/40 text-[#FF6A00] border border-[#FF6A00]/50 px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                <Save className="w-4 h-4" /> Save Draft
+              </button>
+              <button onClick={saveAndPublish} className="flex items-center gap-2 bg-[#FF6A00] hover:bg-[#FF6A00]/80 text-black px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+                <Save className="w-4 h-4" /> Save & Publish
               </button>
             </>
           ) : (
