@@ -107,8 +107,14 @@ export function AuthProvider({ children }) {
     } else if (!user && pathname.startsWith('/admin')) {
       router.replace('/login');
     } else if (user && user.role === 'TEAM_USER') {
-      if (pathname === '/login' || pathname.startsWith('/admin') || pathname === '/panel/change-password') {
-        router.replace('/panel/dashboard');
+      if (user.mustChangePassword) {
+        if (pathname !== '/panel/change-password') {
+          router.replace('/panel/change-password');
+        }
+      } else {
+        if (pathname === '/login' || pathname.startsWith('/admin') || pathname === '/panel/change-password') {
+          router.replace('/panel/dashboard');
+        }
       }
     } else if (user && user.role === 'ADMIN') {
       if (pathname === '/login' || pathname.startsWith('/panel')) {
@@ -127,7 +133,11 @@ export function AuthProvider({ children }) {
     if (userData.role === 'ADMIN') {
       router.push('/admin/dashboard');
     } else {
-      router.push('/panel/dashboard');
+      if (userData.mustChangePassword) {
+        router.push('/panel/change-password');
+      } else {
+        router.push('/panel/dashboard');
+      }
     }
   };
 
