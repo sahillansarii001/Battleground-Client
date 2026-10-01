@@ -463,7 +463,7 @@ export default function Register() {
             {/* Step 2: Operators (Compact Grid Layout) */}
             {step === 2 && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="space-y-4 lg:max-h-[50vh] lg:overflow-y-auto pr-2 custom-scrollbar">
+                <div className={`space-y-4 lg:max-h-[50vh] lg:overflow-y-auto pr-2 custom-scrollbar ${players.length <= 2 ? 'pb-32' : ''}`}>
                   {players.map((player, index) => (
                     <div key={index} className="bg-[#080A0C] border border-white/5 p-3 sm:p-4 relative group">
                       <div className="absolute top-0 left-0 w-1 h-full bg-[#FF6A00] opacity-50"></div>
