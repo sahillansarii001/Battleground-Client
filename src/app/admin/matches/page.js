@@ -169,11 +169,11 @@ export default function AdminMatches() {
                   <h3 className="text-white font-bold font-rajdhani text-xl uppercase">{match.matchName}</h3>
                   <span className={`px-2 py-1 text-[10px] font-bold tracking-widest ${
                     match.status === 'LIVE' ? 'bg-red-500/20 text-red-500' :
-                    match.status === 'COMPLETED' ? 'bg-green-500/20 text-green-500' :
+                    match.status === 'COMPLETED' || match.resultStatus === 'PUBLISHED' ? 'bg-green-500/20 text-green-500' :
                     match.status === 'RESULT_PROCESSING' ? 'bg-yellow-500/20 text-yellow-500' :
                     'bg-white/10 text-[#B8C0C2]'
                   }`}>
-                    {match.status}
+                    {match.resultStatus === 'PUBLISHED' ? 'COMPLETED' : match.status}
                   </span>
                 </div>
                 <div className="flex gap-4 text-xs font-inter text-[#B8C0C2]">
@@ -222,7 +222,7 @@ export default function AdminMatches() {
                     </button>
                   </>
                 )}
-                {match.status === 'RESULT_PROCESSING' && (
+                {match.status === 'RESULT_PROCESSING' && match.resultStatus !== 'PUBLISHED' && (
                   <button 
                     onClick={() => router.push(`/admin/matches/${match._id}/results`)}
                     className="flex items-center gap-2 bg-[#FF6A00] hover:bg-white hover:text-black text-white px-4 py-2 text-sm font-bold uppercase tracking-widest font-rajdhani transition-colors"
