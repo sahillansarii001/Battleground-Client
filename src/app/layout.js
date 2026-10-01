@@ -16,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${rajdhani.variable} ${orbitron.variable} ${space.variable} font-sans bg-[#080A0C] text-white min-h-screen flex flex-col antialiased selection:bg-[#FF6A00]/30 selection:text-[#FF6A00] overflow-x-hidden`}>
+      <body className={`${inter.variable} ${rajdhani.variable} ${orbitron.variable} ${space.variable} font-sans bg-[#080A0C] text-white min-h-screen flex flex-col antialiased selection:bg-[#FF6A00]/30 selection:text-[#FF6A00] overflow-x-hidden select-none`}>
         
         {/* Global Gaming Background Effects */}
         <div className="fixed inset-0 pointer-events-none z-0">
