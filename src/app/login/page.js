@@ -141,10 +141,10 @@ export default function Login() {
               <div className="pt-4 border-t border-white/5">
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full flex justify-center py-3 px-4 bg-[#FF6A00] hover:bg-white text-black font-rajdhani text-xl font-bold uppercase tracking-widest transition-colors transform skew-x-[-10deg] shadow-[0_0_15px_rgba(255,106,0,0.4)] disabled:opacity-50"
+                  disabled={loading || error?.toLowerCase().includes('too many')}
+                  className="w-full flex justify-center py-3 px-4 bg-[#FF6A00] hover:bg-white text-black font-rajdhani text-xl font-bold uppercase tracking-widest transition-colors transform skew-x-[-10deg] shadow-[0_0_15px_rgba(255,106,0,0.4)] disabled:opacity-50 disabled:hover:bg-[#FF6A00] disabled:cursor-not-allowed"
                 >
-                  <span className="transform skew-x-10">{loading ? 'Authenticating...' : 'Establish Connection'}</span>
+                  <span className="transform skew-x-10">{loading ? 'Authenticating...' : (error?.toLowerCase().includes('too many') ? 'System Locked' : 'Establish Connection')}</span>
                 </button>
               </div>
             </form>
