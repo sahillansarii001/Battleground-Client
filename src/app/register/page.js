@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { 
   UploadCloud, CheckCircle2, AlertOctagon, Target, 
   ChevronRight, ChevronLeft, Image as ImageIcon,
-  User, Mail, Users, Gamepad2, Crosshair, ChevronDown, ArrowLeft
+  User, Mail, Users, Gamepad2, Crosshair, ChevronDown, ArrowLeft, X
 } from 'lucide-react';
 
 const CustomSelect = ({ value, onChange, options, icon: Icon, placeholder, className="py-3 px-3 bg-[#080A0C] border-white/10 text-sm" }) => {
@@ -428,10 +428,26 @@ export default function Register() {
 
                   <div className="flex flex-col h-full">
                     <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase mb-1">Squad Insignia</label>
-                    <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 cursor-pointer min-h-40">
-                      <input type="file" accept="image/*" onChange={handleLogoChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 min-h-40">
+                      {!preview && (
+                        <input type="file" accept="image/*" onChange={handleLogoChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                      )}
                       {preview ? (
-                        <img src={preview} alt="Preview" className="h-24 w-24 object-cover border border-[#FF6A00]" />
+                        <div className="relative z-20 group">
+                          <img src={preview} alt="Preview" className="h-24 w-24 object-cover border border-[#FF6A00]" />
+                          <button 
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setPreview(null);
+                              setFormData({ ...formData, logo: null });
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-30"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
                       ) : (
                         <div className="text-center">
                           <UploadCloud className="h-6 w-6 text-[#FF6A00] mx-auto mb-2 opacity-80" />
