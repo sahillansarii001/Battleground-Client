@@ -97,6 +97,12 @@ export default function PanelSettings() {
       return;
     }
 
+    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(newPassword)) {
+      setPasswordMessage({ type: 'error', text: 'PASSWORD MUST CONTAIN AT LEAST ONE CAPITAL LETTER, ONE NUMBER, AND ONE SPECIAL CHARACTER' });
+      setPasswordUpdating(false);
+      return;
+    }
+
     try {
       const res = await api.put('/auth/change-password', {
         currentPassword: oldPassword,
