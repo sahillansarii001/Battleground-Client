@@ -113,9 +113,34 @@ export default function Register() {
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, logo: file });
       const reader = new FileReader();
       reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 800;
+          
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            const compressedFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+            setFormData((prev) => ({ ...prev, logo: compressedFile }));
+          }, 'image/jpeg', 0.8);
+        };
+        img.src = reader.result;
         setPreview(reader.result);
       };
       reader.readAsDataURL(file);
