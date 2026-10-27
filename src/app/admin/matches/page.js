@@ -103,11 +103,19 @@ export default function AdminMatches() {
       onConfirm: async () => {
         try {
           await api.delete(`/matches/${id}`);
-          fetchMatches();
+          await fetchMatches();
           setActionModal({ isOpen: false });
         } catch (error) {
           console.error('Failed to delete match', error);
-          setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to delete match', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+          await fetchMatches();
+          setActionModal({ 
+            isOpen: true, 
+            isAlert: true, 
+            title: 'Notice', 
+            message: error.message || 'Failed to delete match. The match may have already been removed.', 
+            confirmText: 'OK', 
+            onConfirm: () => setActionModal({ isOpen: false }) 
+          });
         }
       }
     });
