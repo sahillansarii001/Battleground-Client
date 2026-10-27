@@ -280,21 +280,16 @@ export default function Register() {
           <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-[#39B54A]/10 border border-[#39B54A]/50 mb-6">
             <CheckCircle2 className="h-10 w-10 text-[#39B54A]" />
           </div>
-          <h2 className="font-rajdhani text-4xl font-bold text-white mb-2 uppercase tracking-wide">Deployment <span className="text-[#39B54A]">Authorized</span></h2>
+          <h2 className="font-rajdhani text-4xl font-bold text-white mb-2 uppercase tracking-wide">Deployment <span className="text-[#39B54A]">Received</span></h2>
           <p className="font-inter text-[#B8C0C2] mb-4 text-sm sm:text-base">
-            Squad <strong className="text-white tracking-widest">{formData.teamName}</strong> has been successfully deployed.
+            Squad <strong className="text-white tracking-widest">{formData.teamName}</strong> is locked in. Please wait for high command approval.
           </p>
-          <div className="bg-[#39B54A]/10 border border-[#39B54A]/30 p-4 mb-6 text-xs sm:text-sm text-[#39B54A] font-inter leading-relaxed">
-            Your temporary access password has been dispatched to <strong>{formData.email}</strong>. Log in with this code, and you will be prompted to set your new permanent password.
+          <div className="bg-[#39B54A]/10 border border-[#39B54A]/30 p-4 mb-8 text-xs sm:text-sm text-[#39B54A] font-inter leading-relaxed">
+            Your login credentials will be dispatched to <strong>{formData.email}</strong> once your squad is approved by an admin.
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
-            <Link href="/login" className="inline-flex flex-1 justify-center bg-[#FF6A00] hover:bg-[#ff7b1a] px-6 py-3.5 font-rajdhani font-bold text-black text-lg transition-colors uppercase tracking-widest transform skew-x-[-10deg]">
-              <span className="transform skew-x-10">Proceed to Login</span>
-            </Link>
-            <Link href="/" className="inline-flex flex-1 justify-center bg-white/10 hover:bg-white/20 px-6 py-3.5 font-rajdhani font-bold text-white text-lg transition-colors uppercase tracking-widest transform skew-x-[-10deg]">
-              <span className="transform skew-x-10">Return to Base</span>
-            </Link>
-          </div>
+          <Link href="/" className="inline-flex w-full justify-center bg-white hover:bg-[#39B54A] px-6 py-4 font-rajdhani font-bold text-black text-xl transition-colors uppercase tracking-widest transform skew-x-[-10deg]">
+            <span className="transform skew-x-10">Return to Base</span>
+          </Link>
         </div>
       </div>
     );
