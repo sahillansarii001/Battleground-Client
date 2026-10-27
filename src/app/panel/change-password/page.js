@@ -31,7 +31,7 @@ export default function ChangePassword() {
     setLoading(true);
 
     try {
-      const res = await api.put('/auth/change-password', { password });
+      const res = await api.put('/auth/change-password', { password, newPassword: password });
       if (res.success) {
         // Update user state and redirect
         const storedUser = JSON.parse(localStorage.getItem('user'));
