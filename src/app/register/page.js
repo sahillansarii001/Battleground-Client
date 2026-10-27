@@ -218,6 +218,13 @@ export default function Register() {
         return false;
       }
     }
+
+    const bgmiIds = players.map(p => p.bgmiId);
+    if (new Set(bgmiIds).size !== bgmiIds.length) {
+      setError("EACH OPERATOR MUST HAVE A UNIQUE BGMI ID");
+      return false;
+    }
+
     setError('');
     return true;
   };
@@ -228,6 +235,7 @@ export default function Register() {
   };
 
   const prevStep = () => {
+    setError('');
     if (step > 1) setStep(step - 1);
   };
 
