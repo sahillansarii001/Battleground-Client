@@ -84,10 +84,20 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
     e.preventDefault();
     
     for (const p of formData.players) {
+      if (!p.playerName || !p.inGameName || !p.bgmiId) {
+        setError(`Please fill in all details for operator ${p.inGameName || p.playerName || ''}`);
+        return;
+      }
       if (!/^\d{10}$/.test(p.bgmiId)) {
         setError(`BGMI ID for ${p.inGameName || 'operator'} must be exactly 10 digits.`);
         return;
       }
+    }
+
+    const bgmiIds = formData.players.map(p => p.bgmiId);
+    if (new Set(bgmiIds).size !== bgmiIds.length) {
+      setError('Each operator must have a unique BGMI ID within the squad.');
+      return;
     }
     
     setLoading(true);
@@ -96,7 +106,7 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
       await api.put(`/admin/teams/${team._id}`, formData);
       onSuccess();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update team');
+      setError(err.message || err.response?.data?.message || 'Failed to update team');
     } finally {
       setLoading(false);
     }
