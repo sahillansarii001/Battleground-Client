@@ -11,6 +11,9 @@ const space = Space_Grotesk({ subsets: ["latin"], variable: '--font-space' });
 export const metadata = {
   title: "BATTLEGROUNDS | Official Tournament Portal",
   description: "Premium BGMI Esports Tournament Management Platform",
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({ children }) {
