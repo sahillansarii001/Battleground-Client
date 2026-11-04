@@ -167,6 +167,8 @@ export default function Home() {
                 <li><Link href="/#matches" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">Matches</Link></li>
                 <li><Link href="/#leaderboard" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">Rankings</Link></li>
                 <li><Link href="/rules" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">Rulebook</Link></li>
+                <li><Link href="/privacy-policy" className="text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-wider text-base">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-wider text-base">Terms of Service</Link></li>
               </ul>
             </div>
             <div>
