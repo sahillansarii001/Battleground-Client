@@ -510,7 +510,7 @@ export default function AdminSettings() {
                 <button
                   type="button"
                   onClick={handleAddRank}
-                  className="h-[52px] border border-dashed border-white/20 hover:border-[#FF6A00] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors flex flex-col items-center justify-center gap-1 group bg-[#111518]/50"
+                  className="h-13 border border-dashed border-white/20 hover:border-[#FF6A00] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors flex flex-col items-center justify-center gap-1 group bg-[#111518]/50"
                   title="Add next placement rank"
                 >
                   <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />

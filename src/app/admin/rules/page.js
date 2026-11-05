@@ -634,7 +634,7 @@ export default function AdminRules() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="# Write your tournament directives here in Markdown..."
-                    className="w-full bg-[#080A0C] border border-white/10 px-4 py-4 text-white font-mono text-sm h-[520px] focus:border-[#FF6A00] outline-none custom-scrollbar leading-relaxed resize-y"
+                    className="w-full bg-[#080A0C] border border-white/10 px-4 py-4 text-white font-mono text-sm h-130 focus:border-[#FF6A00] outline-none custom-scrollbar leading-relaxed resize-y"
                   ></textarea>
                 </div>
               )}
@@ -648,7 +648,7 @@ export default function AdminRules() {
                     </span>
                     <span className="text-[#B8C0C2]">Public Match</span>
                   </div>
-                  <div className="w-full bg-[#080A0C] border border-white/10 p-6 text-white h-[520px] overflow-y-auto custom-scrollbar">
+                  <div className="w-full bg-[#080A0C] border border-white/10 p-6 text-white h-130 overflow-y-auto custom-scrollbar">
                     {content.trim() ? (
                       <div className="prose prose-invert prose-orange max-w-none font-inter text-[#B8C0C2] space-y-4">
                         <div className="border-b border-white/10 pb-4 mb-4">
@@ -669,7 +669,7 @@ export default function AdminRules() {
                       </div>
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center text-[#B8C0C2]/50 text-center p-8 space-y-2">
-                        <FileText className="w-12 h-12 stroke-[1]" />
+                        <FileText className="w-12 h-12 stroke-1" />
                         <p className="font-rajdhani text-lg uppercase tracking-wider">Preview is Empty</p>
                         <p className="text-xs max-w-xs">
                           Type markdown into the editor or click "Load BGMI Template" to see the live rendering.
@@ -753,7 +753,7 @@ export default function AdminRules() {
               </span>
             </div>
 
-            <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-1">
+            <div className="space-y-3 max-h-125 overflow-y-auto custom-scrollbar pr-1">
               {rulebooks.map((rb) => {
                 const isPublished = rb.status === 'PUBLISHED';
                 const isCurrentEdit = editingId === rb._id;
