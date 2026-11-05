@@ -73,3 +73,31 @@ body {
   border-bottom: 2px solid var(--bgmi-orange);
   border-right: 2px solid var(--bgmi-orange);
 }
+
+/* Print / PDF Export Styling */
+@media print {
+  @page {
+    margin: 12mm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: #080A0C !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .no-print,
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  .print-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 18px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+}

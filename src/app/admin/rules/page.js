@@ -160,7 +160,9 @@ A player or team may be immediately disqualified for:
 | Using an unregistered player | Info sharing after elimination |
 | Entering another team's slot | Deliberately disrupting a team |
 | Match manipulation | Serious misconduct / abuse |
-| Refusing organizer instructions | |
+| Refusing organizer instructions | Using Self-AED / Self-Aid Kit |
+
+> 🚫 **SELF-AID BAN:** Using Self-AED / Self-Revive kit is strictly prohibited in all competitive lobbies. Any use or possession of a Self-AED results in immediate match disqualification.
 
 > 🚨 **THE TOURNAMENT ORGANIZERS RESERVE THE RIGHT TO REMOVE, DISQUALIFY, OR BAN ANY PLAYER OR TEAM THAT VIOLATES THE TOURNAMENT RULES OR GAINS AN UNFAIR ADVANTAGE. A BANNED PLAYER WILL NOT BE ALLOWED TO PARTICIPATE IN ANY REMAINING MATCHES.**
 

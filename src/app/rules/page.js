@@ -3,7 +3,8 @@ import { useState, useEffect, useMemo } from "react";
 import { 
   Shield, Search, Smartphone, AlertTriangle, Users, Swords, 
   Clock, Award, HelpCircle, CheckCircle, ChevronUp, Copy, Check,
-  Radio, Lock, Flag, FileText, Sparkles, AlertOctagon, Terminal
+  Radio, Lock, Flag, FileText, Sparkles, AlertOctagon, Terminal,
+  Download, Printer
 } from "lucide-react";
 import api from '@/lib/api';
 import ReactMarkdown from 'react-markdown';
@@ -225,7 +226,7 @@ const OFFICIAL_RULES_DATA = [
     shortTitle: "Disqualification",
     icon: AlertOctagon,
     isTable: true,
-    intro: "A player or team may be immediately disqualified for any of the following offenses:",
+    intro: "A player or team may be immediately disqualified for any of the following offenses (including using Self-AED / Self-Aid kit):",
     matrix: [
       ["Hacking or cheating", "Using prohibited devices"],
       ["Using tablets or iPads", "Using emulators"],
@@ -234,9 +235,9 @@ const OFFICIAL_RULES_DATA = [
       ["Using an unregistered player", "Info sharing after elimination"],
       ["Entering another team's slot", "Deliberately disrupting a team"],
       ["Match manipulation", "Serious misconduct / abuse"],
-      ["Refusing organizer instructions", "—"]
+      ["Refusing organizer instructions", "Using Self-AED / Self-Aid Kit (STRICTLY PROHIBITED)"]
     ],
-    callout: "THE TOURNAMENT ORGANIZERS RESERVE THE RIGHT TO REMOVE, DISQUALIFY, OR BAN ANY PLAYER OR TEAM THAT VIOLATES THE TOURNAMENT RULES OR GAINS AN UNFAIR ADVANTAGE. A BANNED PLAYER WILL NOT BE ALLOWED TO PARTICIPATE IN ANY REMAINING MATCHES."
+    callout: "PROHIBITED: USING SELF-AED / SELF-REVIVE KIT IS NOT ALLOWED IN ANY OFFICIAL MATCHES. POSSESSION OR USAGE WILL RESULT IN IMMEDIATE ROUND DISQUALIFICATION."
   },
   {
     id: "14",
@@ -282,6 +283,14 @@ export default function Rules() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleDownloadPDF = () => {
+    setActiveTab("ALL");
+    setSearchQuery("");
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  };
+
   const filteredRules = useMemo(() => {
     return OFFICIAL_RULES_DATA.filter((rule) => {
       const matchesTab = activeTab === "ALL" || rule.id === activeTab;
@@ -325,7 +334,7 @@ export default function Rules() {
             Ignorance of rules is not an excuse. Failure to comply results in immediate disqualification.
           </p>
 
-          {/* Quick Metrics Bar */}
+          {/* Quick Metrics & Actions Bar */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-[11px] font-orbitron uppercase text-[#B8C0C2]">
             <span className="bg-[#111518] border border-white/10 px-3 py-1 text-white font-mono flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#39B54A] animate-pulse"></span>
@@ -337,11 +346,35 @@ export default function Rules() {
             <span className="bg-[#111518] border border-red-500/30 text-red-400 px-3 py-1 font-bold">
               Zero Tolerance Anti-Cheat
             </span>
+
+            {/* Download PDF Button */}
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              className="no-print ml-1 inline-flex items-center gap-2 bg-[#FF6A00] hover:bg-white text-black px-4 py-1.5 text-xs font-rajdhani font-bold uppercase tracking-widest shadow-md shadow-[#FF6A00]/25 transition-all cursor-pointer transform hover:scale-105"
+              title="Download entire 14-section rulebook as PDF"
+            >
+              <Download className="w-4 h-4 stroke-[2.5]" />
+              <span>Download PDF Rulebook</span>
+            </button>
           </div>
         </div>
 
+        {/* Print-Only Official Header */}
+        <div className="hidden print:block pb-6 mb-8 border-b-2 border-[#FF6A00] text-center">
+          <h1 className="text-3xl font-bold font-rajdhani uppercase tracking-wider text-white">
+            BATTLEGROUNDS MOBILE INDIA
+          </h1>
+          <h2 className="text-xl font-bold font-orbitron uppercase text-[#FF6A00] mt-1">
+            OFFICIAL TOURNAMENT DIRECTIVES // VERSIONS 1.0 — 14.0
+          </h2>
+          <p className="text-xs text-[#B8C0C2] mt-1 font-mono">
+            Standard Operating Procedures, Device Policies & Penalties Matrix
+          </p>
+        </div>
+
         {/* Search & Filter Command Center (Sticky) */}
-        <div className="sticky top-20 z-30 mb-8 bg-[#0B0D0F]/95 backdrop-blur-md border border-white/10 p-4 shadow-xl">
+        <div className="sticky top-20 z-30 mb-8 bg-[#0B0D0F]/95 backdrop-blur-md border border-white/10 p-4 shadow-xl no-print">
           <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
             
             {/* Search Input */}
@@ -365,11 +398,23 @@ export default function Rules() {
               )}
             </div>
 
-            {/* View Stats Counter */}
-            <div className="flex items-center gap-2 text-xs font-orbitron text-[#B8C0C2] self-end md:self-auto">
-              <span>Showing:</span>
-              <span className="text-[#FF6A00] font-bold font-mono text-sm">{filteredRules.length}</span>
-              <span>of 14 Sections</span>
+            {/* View Stats Counter & Quick PDF Export */}
+            <div className="flex items-center gap-3 self-end md:self-auto">
+              <div className="flex items-center gap-2 text-xs font-orbitron text-[#B8C0C2]">
+                <span>Showing:</span>
+                <span className="text-[#FF6A00] font-bold font-mono text-sm">{filteredRules.length}</span>
+                <span>/ 14 Sections</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleDownloadPDF}
+                className="flex items-center gap-1.5 bg-[#1A2023] hover:bg-[#FF6A00] border border-white/10 hover:border-[#FF6A00] text-white hover:text-black px-3 py-1.5 font-rajdhani font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                title="Save / Export full document as PDF"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>PDF Export</span>
+              </button>
             </div>
           </div>
 
@@ -415,13 +460,13 @@ export default function Rules() {
               <div
                 key={rule.id}
                 id={`section-${rule.id}`}
-                className="bg-[#111518]/95 border border-white/10 shadow-xl transition-all duration-300 hover:border-[#FF6A00]/50 relative group"
+                className="bg-[#111518]/95 border border-white/10 shadow-xl transition-all duration-300 hover:border-[#FF6A00]/50 relative group print-card"
               >
                 {/* Tactical Corner Marks */}
-                <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#FF6A00]"></div>
-                <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#FF6A00]"></div>
-                <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#FF6A00]"></div>
-                <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#FF6A00]"></div>
+                <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#FF6A00] no-print"></div>
+                <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#FF6A00] no-print"></div>
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#FF6A00] no-print"></div>
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#FF6A00] no-print"></div>
 
                 {/* Card Header Bar */}
                 <div className="bg-[#15191C] border-b border-white/10 px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -447,7 +492,7 @@ export default function Rules() {
                     <button
                       type="button"
                       onClick={() => handleCopyLink(rule.id)}
-                      className="text-[#B8C0C2] hover:text-white p-1.5 hover:bg-white/5 transition-colors"
+                      className="text-[#B8C0C2] hover:text-white p-1.5 hover:bg-white/5 transition-colors no-print"
                       title="Copy link to this section"
                     >
                       {copiedId === rule.id ? (
@@ -627,7 +672,7 @@ export default function Rules() {
         <button
           type="button"
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-11 h-11 bg-[#FF6A00] hover:bg-white text-black font-bold flex items-center justify-center shadow-lg shadow-[#FF6A00]/30 transition-all transform hover:scale-110"
+          className="fixed bottom-8 right-8 z-50 w-11 h-11 bg-[#FF6A00] hover:bg-white text-black font-bold flex items-center justify-center shadow-lg shadow-[#FF6A00]/30 transition-all transform hover:scale-110 no-print"
           title="Back to top"
         >
           <ChevronUp className="w-5 h-5 stroke-[2.5]" />
