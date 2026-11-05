@@ -8,7 +8,6 @@ import MatchSchedule from "@/components/public/MatchSchedule";
 import BattleRankings from "@/components/public/BattleRankings";
 import PublicStats from "@/components/public/PublicStats";
 import RulebookPreview from "@/components/public/RulebookPreview";
-import Footer from "@/components/common/Footer";
 
 export default function Home() {
   return (
