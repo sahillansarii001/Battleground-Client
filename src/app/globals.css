@@ -74,30 +74,63 @@ body {
   border-right: 2px solid var(--bgmi-orange);
 }
 
-/* Print / PDF Export Styling */
+/* Print / PDF Export Styling - Strictly One Rule/Version Per Page */
 @media print {
   @page {
-    margin: 12mm;
+    margin: 10mm;
     size: A4 portrait;
   }
 
-  body {
+  html, body {
     background: #080A0C !important;
     color: #FFFFFF !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    height: auto !important;
   }
 
   .no-print,
   nav,
-  footer {
+  footer,
+  header {
     display: none !important;
   }
 
+  /* Enforce strictly ONE rule/version per printed page */
   .print-card {
-    break-inside: avoid !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-after: always !important;
+    break-after: page !important;
     page-break-inside: avoid !important;
-    margin-bottom: 18px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    break-inside: avoid !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    min-height: 92vh !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    background: #111518 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+  }
+
+  .print-card:first-of-type {
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  .print-creed-page {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    min-height: 92vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
   }
 }

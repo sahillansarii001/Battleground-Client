@@ -4,7 +4,7 @@ import {
   Shield, Search, Smartphone, AlertTriangle, Users, Swords, 
   Clock, Award, HelpCircle, CheckCircle, ChevronUp, Copy, Check,
   Radio, Lock, Flag, FileText, Sparkles, AlertOctagon, Terminal,
-  Download, Printer
+  Download, Printer, ChevronLeft, ChevronRight
 } from "lucide-react";
 import api from '@/lib/api';
 import ReactMarkdown from 'react-markdown';
@@ -281,6 +281,22 @@ export default function Rules() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const currentRuleIndex = OFFICIAL_RULES_DATA.findIndex((r) => r.id === activeTab);
+
+  const handlePrevRule = () => {
+    if (currentRuleIndex > 0) {
+      setActiveTab(OFFICIAL_RULES_DATA[currentRuleIndex - 1].id);
+      window.scrollTo({ top: 220, behavior: "smooth" });
+    }
+  };
+
+  const handleNextRule = () => {
+    if (currentRuleIndex < OFFICIAL_RULES_DATA.length - 1) {
+      setActiveTab(OFFICIAL_RULES_DATA[currentRuleIndex + 1].id);
+      window.scrollTo({ top: 220, behavior: "smooth" });
+    }
   };
 
   const handleDownloadPDF = () => {
@@ -609,10 +625,47 @@ export default function Rules() {
               </button>
             </div>
           )}
+
+          {/* Single Rule Navigation Bar (when 1 rule is selected on screen) */}
+          {activeTab !== "ALL" && currentRuleIndex !== -1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/10 no-print gap-4">
+              <button
+                type="button"
+                onClick={handlePrevRule}
+                disabled={currentRuleIndex === 0}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#111518] hover:bg-[#FF6A00] border border-white/10 hover:border-[#FF6A00] text-white hover:text-black px-5 py-2.5 font-rajdhani font-bold text-sm uppercase tracking-wider transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#FF6A00] group-hover:text-black" />
+                <span>
+                  Previous: Rule {currentRuleIndex > 0 ? OFFICIAL_RULES_DATA[currentRuleIndex - 1].sectionNum : ''}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("ALL")}
+                className="text-xs font-orbitron text-[#B8C0C2] hover:text-[#FF6A00] uppercase tracking-wider underline cursor-pointer"
+              >
+                View All 14 Rules
+              </button>
+
+              <button
+                type="button"
+                onClick={handleNextRule}
+                disabled={currentRuleIndex === OFFICIAL_RULES_DATA.length - 1}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#111518] hover:bg-[#FF6A00] border border-white/10 hover:border-[#FF6A00] text-white hover:text-black px-5 py-2.5 font-rajdhani font-bold text-sm uppercase tracking-wider transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              >
+                <span>
+                  Next: Rule {currentRuleIndex < OFFICIAL_RULES_DATA.length - 1 ? OFFICIAL_RULES_DATA[currentRuleIndex + 1].sectionNum : ''}
+                </span>
+                <ChevronRight className="w-4 h-4 text-[#FF6A00] group-hover:text-black" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Bottom Official Tournament Creed Banner (Matching Image 4) */}
-        <div className="mt-16 bg-[#111518]/90 border border-white/10 p-8 sm:p-12 text-center hud-border relative">
+        <div className="mt-16 bg-[#111518]/90 border border-white/10 p-8 sm:p-12 text-center hud-border relative print-creed-page">
           <div className="max-w-3xl mx-auto space-y-6">
             
             <h2 className="font-orbitron text-2xl sm:text-3xl md:text-4xl font-extrabold text-red-500 uppercase tracking-widest">
