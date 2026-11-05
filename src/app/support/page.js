@@ -2,11 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { 
-  Shield, Headphones, MessageSquare, Mail, Phone, 
-  AlertTriangle, CheckCircle2, Clock, Send, Copy, 
-  Check, ArrowLeft, ExternalLink, HelpCircle, Radio, 
-  Users, AlertOctagon, Sparkles 
+import {
+  Shield,
+  Headphones,
+  MessageSquare,
+  Mail,
+  Phone,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Send,
+  Copy,
+  Check,
+  ArrowLeft,
+  ExternalLink,
+  HelpCircle,
+  Radio,
+  Users,
+  AlertOctagon,
+  Sparkles,
 } from "lucide-react";
 import Footer from "@/components/common/Footer";
 
@@ -21,32 +35,47 @@ const SUPPORT_CATEGORIES = [
 ];
 
 const URGENCY_LEVELS = [
-  { id: "routine", label: "Routine", desc: "Response within 12h", color: "text-[#B8C0C2] border-white/20 bg-white/5" },
-  { id: "priority", label: "Priority", desc: "Match in < 4 hours", color: "text-yellow-400 border-yellow-500/40 bg-yellow-500/10" },
-  { id: "critical", label: "Critical RED", desc: "Active Lobby / In Match", color: "text-red-400 border-red-500/50 bg-red-500/15 animate-pulse" },
+  {
+    id: "routine",
+    label: "Routine",
+    desc: "Response within 12h",
+    color: "text-[#B8C0C2] border-white/20 bg-white/5",
+  },
+  {
+    id: "priority",
+    label: "Priority",
+    desc: "Match in < 4 hours",
+    color: "text-yellow-400 border-yellow-500/40 bg-yellow-500/10",
+  },
+  {
+    id: "critical",
+    label: "Critical RED",
+    desc: "Active Lobby / In Match",
+    color: "text-red-400 border-red-500/50 bg-red-500/15 animate-pulse",
+  },
 ];
 
 const TOP_FAQS = [
   {
     q: "When will we receive Room ID and Password?",
     a: "Room credentials are released 15-20 minutes before scheduled match start on the Captain's Dashboard and via automated email.",
-    link: "/faq#room-credentials"
+    link: "/faq#room-credentials",
   },
   {
     q: "Are iPads, tablets, or emulators permitted?",
     a: "Strictly prohibited. Only standard mobile phones (smartphones) are permitted in accordance with Rule 01.",
-    link: "/faq#devices"
+    link: "/faq#devices",
   },
   {
     q: "Is using Self-AED / Self-Aid kit allowed?",
     a: "No. Self-AED / Self-Aid kit is strictly prohibited in all competitive rounds (Section 13) and leads to round disqualification.",
-    link: "/faq#self-aid"
+    link: "/faq#self-aid",
   },
   {
     q: "How do we report a scoring dispute?",
     a: "Lodge a dispute within 15 minutes of match conclusion with unedited end-game screenshots via this Support Desk.",
-    link: "/faq#scoring-dispute"
-  }
+    link: "/faq#scoring-dispute",
+  },
 ];
 
 export default function SupportPage() {
@@ -57,7 +86,7 @@ export default function SupportPage() {
     category: "room",
     urgency: "priority",
     subject: "",
-    message: ""
+    message: "",
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +108,7 @@ export default function SupportPage() {
       const result = {
         id: generatedId,
         timestamp: new Date().toISOString(),
-        ...formData
+        ...formData,
       };
 
       setTicketResult(result);
@@ -87,9 +116,14 @@ export default function SupportPage() {
 
       // Save ticket locally for player reference
       try {
-        const stored = JSON.parse(localStorage.getItem("bgmi_support_tickets") || "[]");
+        const stored = JSON.parse(
+          localStorage.getItem("bgmi_support_tickets") || "[]",
+        );
         stored.unshift(result);
-        localStorage.setItem("bgmi_support_tickets", JSON.stringify(stored.slice(0, 10)));
+        localStorage.setItem(
+          "bgmi_support_tickets",
+          JSON.stringify(stored.slice(0, 10)),
+        );
       } catch (err) {
         console.warn("Could not save to local storage", err);
       }
@@ -116,9 +150,9 @@ Message: ${ticketResult.message}`;
   const handleEmailDirect = () => {
     if (!ticketResult) return;
     const mailto = `mailto:sahilansari9967747153@gmail.com?subject=${encodeURIComponent(
-      `[${ticketResult.id}] ${ticketResult.urgency.toUpperCase()}: ${ticketResult.subject} - ${ticketResult.squadName}`
+      `[${ticketResult.id}] ${ticketResult.urgency.toUpperCase()}: ${ticketResult.subject} - ${ticketResult.squadName}`,
     )}&body=${encodeURIComponent(
-      `DISPATCH ID: ${ticketResult.id}\nSQUAD: ${ticketResult.squadName}\nCAPTAIN EMAIL: ${ticketResult.captainEmail}\nIN-GAME ID: ${ticketResult.inGameId}\nCATEGORY: ${ticketResult.category}\nURGENCY: ${ticketResult.urgency}\n\nDETAILS:\n${ticketResult.message}`
+      `DISPATCH ID: ${ticketResult.id}\nSQUAD: ${ticketResult.squadName}\nCAPTAIN EMAIL: ${ticketResult.captainEmail}\nIN-GAME ID: ${ticketResult.inGameId}\nCATEGORY: ${ticketResult.category}\nURGENCY: ${ticketResult.urgency}\n\nDETAILS:\n${ticketResult.message}`,
     )}`;
     window.location.href = mailto;
   };
@@ -131,11 +165,10 @@ Message: ${ticketResult.message}`;
       <div className="absolute bottom-1/3 left-0 w-[40vw] h-[40vw] bg-[#FF6A00]/5 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 relative z-10 flex-1 w-full">
-        
         {/* Navigation Breadcrumb */}
         <div className="mb-8 flex items-center justify-between">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center gap-2 font-orbitron text-xs text-[#B8C0C2] hover:text-[#FF6A00] uppercase tracking-widest transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -165,7 +198,9 @@ Message: ${ticketResult.message}`;
           </h1>
 
           <p className="font-inter text-sm sm:text-base text-[#B8C0C2] max-w-2xl mx-auto leading-relaxed">
-            Direct priority dispatch line for tournament dispute mediation, match room assistance, scoring verification, and squad administration.
+            Direct priority dispatch line for tournament dispute mediation,
+            match room assistance, scoring verification, and squad
+            administration.
           </p>
 
           {/* Real-time Status Badges */}
@@ -185,19 +220,20 @@ Message: ${ticketResult.message}`;
 
         {/* Direct Emergency Channels Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          {/* Channel 1: Discord */}
+          {/* Channel 1: Telegram */}
           <div className="bg-[#111518]/90 border border-white/10 p-5 hud-border hover:border-[#FF6A00]/50 transition-all group">
             <div className="w-10 h-10 rounded bg-[#5865F2]/10 border border-[#5865F2]/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <MessageSquare className="w-5 h-5 text-[#5865F2]" />
             </div>
             <h3 className="font-rajdhani text-lg font-bold uppercase tracking-wider text-white mb-1">
-              Official Discord
+              Official Telegram
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              Live referee voice channels and automated <code className="text-[#FF6A00]">#ticket-support</code> bot.
+              Live referee voice channels and automated{" "}
+              <code className="text-[#FF6A00]">#ticket-support</code> bot.
             </p>
             <a
-              href="https://discord.gg"
+              href="https://Telegram.gg"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-[11px] font-orbitron text-[#5865F2] hover:text-white uppercase tracking-wider font-bold"
@@ -215,7 +251,8 @@ Message: ${ticketResult.message}`;
               Captains Hotline
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              WhatsApp fast-track priority channel reserved for registered squad leaders.
+              WhatsApp fast-track priority channel reserved for registered squad
+              leaders.
             </p>
             <a
               href="https://wa.me/919967747153?text=BGMI%20Tournament%20Support%20Inquiry"
@@ -236,7 +273,8 @@ Message: ${ticketResult.message}`;
               Email Dispatch
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              Formal protest appeals, official roster updates, and partnership inquiries.
+              Formal protest appeals, official roster updates, and partnership
+              inquiries.
             </p>
             <a
               href="mailto:sahilansari9967747153@gmail.com"
@@ -255,7 +293,8 @@ Message: ${ticketResult.message}`;
               Official Rulebook
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              14 official sections detailing devices, bootcamp restrictions & penalties.
+              14 official sections detailing devices, bootcamp restrictions &
+              penalties.
             </p>
             <Link
               href="/rules"
@@ -268,7 +307,6 @@ Message: ${ticketResult.message}`;
 
         {/* Main Content Grid: Dispatch Form & Help Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
-          
           {/* Left Column: Interactive Dispatch Form (7 cols) */}
           <div className="lg:col-span-7 bg-[#111518]/90 border border-white/10 p-6 sm:p-8 hud-border">
             <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
@@ -292,25 +330,38 @@ Message: ${ticketResult.message}`;
                     Dispatch Successfully Logged
                   </h3>
                   <p className="text-xs font-mono text-[#B8C0C2] mb-4">
-                    Your request has been routed to the active Match Referee console.
+                    Your request has been routed to the active Match Referee
+                    console.
                   </p>
 
                   <div className="bg-black/60 border border-white/10 p-4 max-w-md mx-auto mb-4 text-left font-mono text-xs space-y-1.5">
                     <div className="flex justify-between items-center pb-2 border-b border-white/10">
                       <span className="text-[#B8C0C2]">TICKET ID:</span>
-                      <span className="text-[#FF6A00] font-bold text-sm">{ticketResult.id}</span>
+                      <span className="text-[#FF6A00] font-bold text-sm">
+                        {ticketResult.id}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#B8C0C2]">SQUAD:</span>
-                      <span className="text-white uppercase">{ticketResult.squadName}</span>
+                      <span className="text-white uppercase">
+                        {ticketResult.squadName}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#B8C0C2]">CATEGORY:</span>
-                      <span className="text-white uppercase">{ticketResult.category}</span>
+                      <span className="text-white uppercase">
+                        {ticketResult.category}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#B8C0C2]">PRIORITY:</span>
-                      <span className={ticketResult.urgency === 'critical' ? 'text-red-400 font-bold uppercase' : 'text-yellow-400 font-bold uppercase'}>
+                      <span
+                        className={
+                          ticketResult.urgency === "critical"
+                            ? "text-red-400 font-bold uppercase"
+                            : "text-yellow-400 font-bold uppercase"
+                        }
+                      >
                         {ticketResult.urgency}
                       </span>
                     </div>
@@ -358,7 +409,7 @@ Message: ${ticketResult.message}`;
                         category: "room",
                         urgency: "priority",
                         subject: "",
-                        message: ""
+                        message: "",
                       });
                     }}
                     className="text-xs font-orbitron text-[#B8C0C2] hover:text-[#FF6A00] underline uppercase tracking-wider cursor-pointer"
@@ -369,13 +420,16 @@ Message: ${ticketResult.message}`;
               </div>
             ) : (
               /* Ticket Input Form */
-              <form onSubmit={handleSubmit} className="space-y-4 font-inter text-sm">
-                
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4 font-inter text-sm"
+              >
                 {/* Squad Name & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-orbitron text-[#B8C0C2] uppercase tracking-wider mb-1.5">
-                      Squad / Team Name <span className="text-[#FF6A00]">*</span>
+                      Squad / Team Name{" "}
+                      <span className="text-[#FF6A00]">*</span>
                     </label>
                     <input
                       type="text"
@@ -390,7 +444,8 @@ Message: ${ticketResult.message}`;
 
                   <div>
                     <label className="block text-xs font-orbitron text-[#B8C0C2] uppercase tracking-wider mb-1.5">
-                      Captain / Contact Email <span className="text-[#FF6A00]">*</span>
+                      Captain / Contact Email{" "}
+                      <span className="text-[#FF6A00]">*</span>
                     </label>
                     <input
                       type="email"
@@ -431,7 +486,11 @@ Message: ${ticketResult.message}`;
                       className="w-full bg-[#080A0C] border border-white/15 px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FF6A00] transition-colors cursor-pointer"
                     >
                       {SUPPORT_CATEGORIES.map((cat) => (
-                        <option key={cat.id} value={cat.id} className="bg-[#111518] text-white">
+                        <option
+                          key={cat.id}
+                          value={cat.id}
+                          className="bg-[#111518] text-white"
+                        >
                           {cat.label}
                         </option>
                       ))}
@@ -451,18 +510,24 @@ Message: ${ticketResult.message}`;
                         <button
                           key={lvl.id}
                           type="button"
-                          onClick={() => setFormData((p) => ({ ...p, urgency: lvl.id }))}
+                          onClick={() =>
+                            setFormData((p) => ({ ...p, urgency: lvl.id }))
+                          }
                           className={`p-2.5 text-left border transition-all cursor-pointer ${
-                            isSelected 
-                              ? `${lvl.color} border-current ring-1 ring-current` 
+                            isSelected
+                              ? `${lvl.color} border-current ring-1 ring-current`
                               : "border-white/10 bg-black/40 text-[#B8C0C2] hover:border-white/30"
                           }`}
                         >
                           <div className="font-rajdhani font-bold uppercase tracking-wider text-sm flex items-center justify-between">
                             <span>{lvl.label}</span>
-                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-current"></span>}
+                            {isSelected && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                            )}
                           </div>
-                          <div className="text-[10px] text-[#B8C0C2] opacity-80 mt-0.5 font-mono">{lvl.desc}</div>
+                          <div className="text-[10px] text-[#B8C0C2] opacity-80 mt-0.5 font-mono">
+                            {lvl.desc}
+                          </div>
                         </button>
                       );
                     })}
@@ -488,7 +553,8 @@ Message: ${ticketResult.message}`;
                 {/* Message Body */}
                 <div>
                   <label className="block text-xs font-orbitron text-[#B8C0C2] uppercase tracking-wider mb-1.5">
-                    Detailed Message & Evidence Links <span className="text-[#FF6A00]">*</span>
+                    Detailed Message & Evidence Links{" "}
+                    <span className="text-[#FF6A00]">*</span>
                   </label>
                   <textarea
                     name="message"
@@ -500,7 +566,8 @@ Message: ${ticketResult.message}`;
                     className="w-full bg-[#080A0C] border border-white/15 p-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF6A00] transition-colors resize-none leading-relaxed"
                   />
                   <p className="text-[11px] text-[#B8C0C2] mt-1 font-mono">
-                    For screenshots/videos, paste an accessible Google Drive, Imgur, or YouTube unlisted link.
+                    For screenshots/videos, paste an accessible Google Drive,
+                    Imgur, or YouTube unlisted link.
                   </p>
                 </div>
 
@@ -530,7 +597,6 @@ Message: ${ticketResult.message}`;
 
           {/* Right Column: Match Day Advisory & Quick FAQ (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
-            
             {/* Match Day Urgent Advisory Card */}
             <div className="bg-red-500/10 border border-red-500/30 p-6 hud-border">
               <div className="flex items-center gap-2 mb-3">
@@ -540,12 +606,20 @@ Message: ${ticketResult.message}`;
                 </h3>
               </div>
               <p className="text-xs text-[#B8C0C2] leading-relaxed mb-3">
-                If your assigned match is scheduled to start in <strong>under 15 minutes</strong> and you have not received Room credentials:
+                If your assigned match is scheduled to start in{" "}
+                <strong>under 15 minutes</strong> and you have not received Room
+                credentials:
               </p>
               <ul className="text-xs text-[#B8C0C2] space-y-2 font-mono list-disc list-inside">
-                <li>Check your Captain Dashboard at <code className="text-[#FF6A00]">/panel/dashboard</code></li>
+                <li>
+                  Check your Captain Dashboard at{" "}
+                  <code className="text-[#FF6A00]">/panel/dashboard</code>
+                </li>
                 <li>Verify your spam/junk folder for automated credentials</li>
-                <li>Reach out immediately on WhatsApp Hotline: <span className="text-white font-bold">+91 9967747153</span></li>
+                <li>
+                  Reach out immediately on WhatsApp Hotline:{" "}
+                  <span className="text-white font-bold">+91 9967747153</span>
+                </li>
                 <li>Do NOT enter unauthorized slots once inside room</li>
               </ul>
             </div>
@@ -569,7 +643,10 @@ Message: ${ticketResult.message}`;
 
               <div className="space-y-3">
                 {TOP_FAQS.map((faq, idx) => (
-                  <div key={idx} className="bg-black/40 border border-white/5 p-3 rounded">
+                  <div
+                    key={idx}
+                    className="bg-black/40 border border-white/5 p-3 rounded"
+                  >
                     <p className="font-rajdhani font-bold text-sm text-white mb-1">
                       {faq.q}
                     </p>
@@ -599,12 +676,12 @@ Message: ${ticketResult.message}`;
             {/* SLA Guarantee Box */}
             <div className="bg-[#111518]/60 border border-white/10 p-4 text-center font-mono text-[11px] text-[#B8C0C2] flex items-center justify-center gap-2">
               <Clock className="w-4 h-4 text-[#FF6A00]" />
-              <span>Official Support SLA: Routine &lt; 12h • Match Day &lt; 15 mins</span>
+              <span>
+                Official Support SLA: Routine &lt; 12h • Match Day &lt; 15 mins
+              </span>
             </div>
-
           </div>
         </div>
-
       </div>
 
       {/* Shared Tactical Footer */}
@@ -612,4 +689,3 @@ Message: ${ticketResult.message}`;
     </div>
   );
 }
-
