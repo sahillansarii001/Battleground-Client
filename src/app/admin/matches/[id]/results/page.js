@@ -86,8 +86,18 @@ export default function MatchResults() {
         const updated = { ...s, [field]: numValue };
         
         // Auto calculate points based on settings
-        if (field === 'placement' && settings?.placementPoints) {
-          updated.placementPoints = settings.placementPoints[String(numValue)] || 0;
+        if (field === 'placement') {
+          if (numValue > 0 && settings?.placementPoints) {
+            const rawPts = (settings.placementPoints instanceof Map)
+              ? settings.placementPoints.get(String(numValue))
+              : settings.placementPoints[String(numValue)];
+            updated.placementPoints = (rawPts !== undefined && rawPts !== null) ? Number(rawPts) : 0;
+          } else {
+            updated.placementPoints = 0;
+          }
+        }
+        if (field === 'placementPoints') {
+          updated.placementPoints = numValue;
         }
         if (field === 'kills' && settings?.perKill !== undefined) {
           updated.killPoints = numValue * settings.perKill;
@@ -249,7 +259,17 @@ export default function MatchResults() {
                       <input type="number" min="0" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
                     </td>
                     <td className="p-4">
-                      <span className="block w-full px-2 py-1 text-center text-[#39B54A] font-bold">{score.placementPoints}</span>
+                      {isEditing ? (
+                        <input 
+                          type="number" 
+                          min="0" 
+                          value={score.placementPoints} 
+                          onChange={(e) => handleScoreChange(score.teamId, 'placementPoints', e.target.value)} 
+                          className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-[#39B54A] font-bold focus:border-[#FF6A00] outline-none" 
+                        />
+                      ) : (
+                        <span className="block w-full px-2 py-1 text-center text-[#39B54A] font-bold">{score.placementPoints}</span>
+                      )}
                     </td>
                     <td className="p-4">
                       <input type="number" min="0" disabled={isReadOnly} value={score.kills} onChange={(e) => handleScoreChange(score.teamId, 'kills', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />

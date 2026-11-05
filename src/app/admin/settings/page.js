@@ -1,5 +1,5 @@
 "use client";
-import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon, Trophy } from 'lucide-react';
+import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon, Trophy, Plus, Trash2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
@@ -71,6 +71,29 @@ export default function AdminSettings() {
     };
     fetchSettings();
   }, []);
+
+
+  const rankList = Object.keys(placementPoints || {})
+    .map(Number)
+    .filter(n => !isNaN(n) && n > 0)
+    .sort((a, b) => a - b);
+  const activeRanks = rankList.length > 0 ? rankList : [1, 2, 3, 4];
+
+  const handleAddRank = () => {
+    const nextRank = activeRanks.length > 0 ? Math.max(...activeRanks) + 1 : 1;
+    if (nextRank <= 25) {
+      setPlacementPoints(prev => ({ ...prev, [nextRank]: 0 }));
+    }
+  };
+
+  const handleRemoveRank = (rankToRemove) => {
+    setPlacementPoints(prev => {
+      const next = { ...prev };
+      delete next[rankToRemove];
+      delete next[String(rankToRemove)];
+      return next;
+    });
+  };
 
   const handleSaveSettings = async () => {
     try {
@@ -454,13 +477,25 @@ export default function AdminSettings() {
             <div className="h-16 w-px bg-white/10 hidden sm:block"></div>
 
             {/* Placement Points */}
-            {Array.from({ length: 4 }, (_, i) => i + 1).map((pos) => (
+            {activeRanks.map((pos) => (
               <div key={pos} className="flex flex-col w-24">
-                <span className="text-[#FF6A00] font-orbitron text-[10px] font-bold mb-2 tracking-widest text-center uppercase">Rank #{pos}</span>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-[#FF6A00] font-orbitron text-[10px] font-bold tracking-widest uppercase">Rank #{pos}</span>
+                  {activeRanks.length > 1 && pos === activeRanks[activeRanks.length - 1] && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveRank(pos)}
+                      title={`Remove Rank #${pos}`}
+                      className="text-[#B8C0C2] hover:text-red-500 transition-colors p-0.5"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
                 <div className="hud-border p-1 bg-[#1A2023]">
                   <input 
                     type="number" 
-                    value={placementPoints[pos] || 0}
+                    value={placementPoints[pos] ?? 0}
                     onChange={(e) => setPlacementPoints({ ...placementPoints, [pos]: Number(e.target.value) })}
                     min="0"
                     className="w-full bg-black/50 border-none text-white font-rajdhani font-bold text-xl px-2 py-2 focus:outline-none text-center focus:bg-[#FF6A00]/10 transition-colors" 
@@ -468,6 +503,21 @@ export default function AdminSettings() {
                 </div>
               </div>
             ))}
+
+            {/* Add Rank Button */}
+            {activeRanks.length < 25 && (
+              <div className="flex flex-col w-24 justify-end">
+                <button
+                  type="button"
+                  onClick={handleAddRank}
+                  className="h-[52px] border border-dashed border-white/20 hover:border-[#FF6A00] text-[#B8C0C2] hover:text-[#FF6A00] transition-colors flex flex-col items-center justify-center gap-1 group bg-[#111518]/50"
+                  title="Add next placement rank"
+                >
+                  <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span className="font-orbitron text-[9px] uppercase font-bold tracking-wider">+ Rank</span>
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="pt-6 mt-6 border-t border-white/10">
