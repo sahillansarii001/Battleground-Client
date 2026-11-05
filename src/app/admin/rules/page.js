@@ -427,9 +427,9 @@ export default function AdminRules() {
   const handlePublishDirect = async (id, rbTitle) => {
     setActionModal({
       isOpen: true,
-      title: 'Publish Protocol Globally?',
-      message: `Deploy "${rbTitle}" as the active tournament rulebook? All visitors will see these rules immediately.`,
-      confirmText: 'Make Active Rulebook',
+      title: 'Publish Protocol Section?',
+      message: `Deploy "${rbTitle}" as an active tournament rule? Operatives will see it immediately at /rules.`,
+      confirmText: 'Make Active Rule',
       onConfirm: async () => {
         try {
           await api.put(`/rules/${id}/publish`);
@@ -438,7 +438,7 @@ export default function AdminRules() {
             isOpen: true,
             isAlert: true,
             title: 'Published!',
-            message: 'Rulebook is now live on the public portal.',
+            message: `"${rbTitle}" is now live on the public directives portal.`,
             confirmText: 'OK',
             onConfirm: () => setActionModal({ isOpen: false })
           });
@@ -447,7 +447,40 @@ export default function AdminRules() {
             isOpen: true,
             isAlert: true,
             title: 'Publish Failed',
-            message: error?.message || 'Could not publish rulebook.',
+            message: error?.message || 'Could not publish rulebook section.',
+            confirmText: 'OK',
+            onConfirm: () => setActionModal({ isOpen: false })
+          });
+        }
+      }
+    });
+  };
+
+  const handleUnpublishDirect = async (id, rbTitle) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Move Section to Draft?',
+      message: `Set "${rbTitle}" to Draft? It will be hidden from operatives until published again.`,
+      confirmText: 'Set to Draft',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await api.put(`/rules/${id}/unpublish`);
+          fetchRulebooks();
+          setActionModal({
+            isOpen: true,
+            isAlert: true,
+            title: 'Moved to Draft',
+            message: `"${rbTitle}" is now a draft.`,
+            confirmText: 'OK',
+            onConfirm: () => setActionModal({ isOpen: false })
+          });
+        } catch (error) {
+          setActionModal({
+            isOpen: true,
+            isAlert: true,
+            title: 'Action Failed',
+            message: error?.message || 'Could not update rule status.',
             confirmText: 'OK',
             onConfirm: () => setActionModal({ isOpen: false })
           });
@@ -459,7 +492,8 @@ export default function AdminRules() {
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const charCount = content.length;
   const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 180));
-  const publishedRulebook = rulebooks.find(r => r.status === 'PUBLISHED');
+  const publishedRulebooks = rulebooks.filter(r => r.status === 'PUBLISHED');
+  const publishedRulebook = publishedRulebooks[0];
 
   if (loading) {
     return (
@@ -541,6 +575,47 @@ export default function AdminRules() {
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-[#111518]/90 border border-white/10 p-6 space-y-5">
             
+            {/* Quick Rule Section Switcher */}
+            {rulebooks.length > 0 && (
+              <div className="pb-3 border-b border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-orbitron text-[#FF6A00] uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                    <BookOpen className="w-3.5 h-3.5" /> Rule Section Switcher ({rulebooks.length} Rules in Suite):
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleNewDraft}
+                    className="text-[10px] font-orbitron text-[#B8C0C2] hover:text-[#FF6A00] uppercase tracking-wider underline cursor-pointer"
+                  >
+                    + Add New Rule Section
+                  </button>
+                </div>
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 custom-scrollbar">
+                  {rulebooks.map((rb, idx) => {
+                    const isCurrent = editingId === rb._id;
+                    const short = rb.title.replace(/^\d+[\.\s]+/, '').split('&')[0].trim().slice(0, 14);
+                    return (
+                      <button
+                        key={rb._id}
+                        type="button"
+                        onClick={() => handleEdit(rb)}
+                        className={`px-2.5 py-1 text-xs font-orbitron uppercase tracking-wider shrink-0 transition-all border flex items-center gap-1 cursor-pointer ${
+                          isCurrent
+                            ? 'bg-[#FF6A00] text-black border-[#FF6A00] font-bold shadow-md shadow-[#FF6A00]/20'
+                            : rb.status === 'PUBLISHED'
+                            ? 'bg-[#080A0C] text-white border-white/20 hover:border-[#FF6A00]/50'
+                            : 'bg-[#080A0C] text-[#B8C0C2] border-white/5 opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <span className="text-[10px] opacity-75">v{rb.version}</span>
+                        <span>{short || `Rule ${idx + 1}`}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Meta Row: Title & Version */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2">
@@ -822,39 +897,39 @@ export default function AdminRules() {
               </Link>
             </div>
 
-            {publishedRulebook ? (
+            {publishedRulebooks.length > 0 ? (
               <div className="bg-[#080A0C] border border-[#39B54A]/40 p-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#39B54A]/5 rounded-full blur-xl pointer-events-none"></div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-2 h-2 rounded-full bg-[#39B54A] animate-pulse"></span>
                   <span className="font-orbitron text-[10px] font-bold text-[#39B54A] uppercase tracking-widest">
-                    ACTIVE PROTOCOL
+                    ACTIVE PROTOCOL SUITE
                   </span>
                 </div>
                 <h4 className="font-rajdhani text-xl font-bold text-white uppercase tracking-wider">
-                  {publishedRulebook.title}
+                  {publishedRulebooks.length} Active {publishedRulebooks.length === 1 ? 'Rule Section' : 'Rule Sections'}
                 </h4>
-                <div className="flex items-center gap-3 text-xs text-[#B8C0C2] font-inter mt-1 mb-4">
-                  <span className="font-mono text-[#FF6A00]">v{publishedRulebook.version}</span>
-                  <span>•</span>
-                  <span>
-                    Deployed: {new Date(publishedRulebook.updatedAt || publishedRulebook.createdAt).toLocaleDateString()}
+                <div className="flex items-center gap-2 text-xs text-[#B8C0C2] font-inter mt-1 mb-4 flex-wrap">
+                  <span className="font-mono text-[#FF6A00]">
+                    v{publishedRulebooks[0]?.version} — v{publishedRulebooks[publishedRulebooks.length - 1]?.version}
                   </span>
+                  <span>•</span>
+                  <span className="text-[#39B54A]">Deployed Globally</span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleEdit(publishedRulebook)}
+                <Link
+                  href="/rules"
+                  target="_blank"
                   className="w-full bg-[#1A2023] hover:bg-[#FF6A00]/20 border border-white/10 hover:border-[#FF6A00] text-white py-2 text-xs font-rajdhani font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
                 >
-                  <Edit className="w-3.5 h-3.5 text-[#FF6A00]" /> Edit Live Protocol
-                </button>
+                  <ExternalLink className="w-3.5 h-3.5 text-[#FF6A00]" /> Inspect Live Rules (/rules)
+                </Link>
               </div>
             ) : (
               <div className="bg-[#080A0C] border border-dashed border-white/10 p-6 text-center text-[#B8C0C2] text-xs">
                 <AlertTriangle className="w-8 h-8 text-[#FF6A00] mx-auto mb-2 opacity-80" />
-                <p className="font-bold text-white uppercase mb-1 font-rajdhani text-sm">No Live Rulebook</p>
-                <p>Deploy a draft to make your tournament rules publicly visible at /rules.</p>
+                <p className="font-bold text-white uppercase mb-1 font-rajdhani text-sm">No Live Rules</p>
+                <p>Deploy a rule section to make your tournament directives publicly visible at /rules.</p>
               </div>
             )}
           </div>
@@ -863,7 +938,7 @@ export default function AdminRules() {
           <div className="bg-[#111518]/90 border border-white/10 p-6">
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <h3 className="font-rajdhani text-lg font-bold text-white uppercase tracking-widest">
-                Version History
+                Sections & Versions
               </h3>
               <span className="text-[10px] font-orbitron text-[#B8C0C2] uppercase">
                 {rulebooks.length} {rulebooks.length === 1 ? 'Record' : 'Records'}
@@ -935,11 +1010,21 @@ export default function AdminRules() {
                     <div className="flex items-center justify-between text-[11px] text-[#B8C0C2] font-inter mt-3 pt-2 border-t border-white/5">
                       <span>{new Date(rb.updatedAt || rb.createdAt).toLocaleDateString()}</span>
                       
-                      {!isPublished && (
+                      {isPublished ? (
+                        <button
+                          type="button"
+                          onClick={() => handleUnpublishDirect(rb._id, rb.title)}
+                          className="text-[#B8C0C2] hover:text-yellow-400 font-orbitron text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors"
+                          title="Move to Draft (Hide from public /rules)"
+                        >
+                          Move to Draft
+                        </button>
+                      ) : (
                         <button
                           type="button"
                           onClick={() => handlePublishDirect(rb._id, rb.title)}
-                          className="text-[#FF6A00] hover:text-white font-orbitron text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors"
+                          className="text-[#39B54A] hover:text-white font-orbitron text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors"
+                          title="Publish to public /rules"
                         >
                           <Upload className="w-3 h-3" /> Make Live
                         </button>
