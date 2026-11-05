@@ -1,2 +1,1 @@
-export { default } from "../privacy-policy/page";
-
+export { default, metadata } from "../privacy-policy/page";

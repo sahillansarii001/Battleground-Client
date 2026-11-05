@@ -80,6 +80,7 @@ const TOP_FAQS = [
 ];
 
 export default function SupportPage() {
+  const [mounted, setMounted] = useState(false);
   const [telegramLink, setTelegramLink] = useState(
     "https://t.me/+sT2Jb1LqB_VlMzE1",
   );
@@ -98,6 +99,7 @@ export default function SupportPage() {
   const [copiedTicket, setCopiedTicket] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchCommunityLink = async () => {
       try {
         const res = await api.get("/public/settings");

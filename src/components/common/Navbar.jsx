@@ -46,6 +46,7 @@ export default function Navbar() {
               <Link href="/#matches" className="text-gray-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold transition-all uppercase tracking-wide">Matches</Link>
               <Link href="/#leaderboard" className="text-gray-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold transition-all uppercase tracking-wide">Leaderboard</Link>
               <Link href="/rules" className="text-gray-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold transition-all uppercase tracking-wide">Rules</Link>
+              <Link href="/support" className="text-gray-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold transition-all uppercase tracking-wide">Support</Link>
             </div>
           </div>
 
