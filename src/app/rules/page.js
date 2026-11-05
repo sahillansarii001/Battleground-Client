@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import api from '@/lib/api';
 import ReactMarkdown from 'react-markdown';
+import Footer from '@/components/common/Footer';
 
 // Structured 14 Official BGMI Tournament Rules matching tournament reference graphics
 const OFFICIAL_RULES_DATA = [
@@ -719,6 +720,9 @@ export default function Rules() {
         </div>
 
       </div>
+
+      {/* Shared Tactical Footer (Hidden when printing PDF) */}
+      <Footer />
 
       {/* Floating Scroll to Top Action */}
       {showScrollTop && (

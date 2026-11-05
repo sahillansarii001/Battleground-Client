@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Shield, FileCheck, ArrowLeft } from "lucide-react";
+import Footer from "@/components/common/Footer";
 
 export const metadata = {
   title: "Terms of Service | BATTLEGROUNDS Esports Portal",
@@ -124,6 +125,7 @@ export default function TermsOfService() {
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

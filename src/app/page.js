@@ -8,6 +8,7 @@ import MatchSchedule from "@/components/public/MatchSchedule";
 import BattleRankings from "@/components/public/BattleRankings";
 import PublicStats from "@/components/public/PublicStats";
 import RulebookPreview from "@/components/public/RulebookPreview";
+import Footer from "@/components/common/Footer";
 
 export default function Home() {
   return (
@@ -174,7 +175,7 @@ export default function Home() {
             <div>
               <h4 className="text-white font-orbitron text-[11px] font-bold uppercase tracking-widest mb-6">Comms</h4>
               <ul className="space-y-4 font-rajdhani text-lg">
-                <li><Link href="/contact" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">Support</Link></li>
+                <li><Link href="/support" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">Support</Link></li>
                 <li><Link href="/faq" className="text-[#B8C0C2] hover:text-white transition-colors uppercase tracking-wider">FAQ</Link></li>
                 <li><Link href="/login" className="text-[#B8C0C2] hover:text-[#FF6A00] transition-colors uppercase tracking-wider">Squad Auth</Link></li>
               </ul>

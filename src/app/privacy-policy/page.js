@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Shield, Lock, FileText, ArrowLeft, CheckCircle2 } from "lucide-react";
+import Footer from "@/components/common/Footer";
 
 export const metadata = {
   title: "Privacy Policy | BATTLEGROUNDS Esports Portal",
@@ -194,6 +195,7 @@ export default function PrivacyPolicy() {
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

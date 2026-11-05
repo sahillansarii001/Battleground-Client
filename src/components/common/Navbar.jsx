@@ -85,6 +85,8 @@ export default function Navbar() {
             <Link href="/#matches" className="hover:bg-white/10 text-white block px-4 py-3 rounded-xl text-sm font-bold transition-colors uppercase tracking-wide" onClick={toggleMenu}>Matches</Link>
             <Link href="/#leaderboard" className="hover:bg-white/10 text-white block px-4 py-3 rounded-xl text-sm font-bold transition-colors uppercase tracking-wide" onClick={toggleMenu}>Leaderboard</Link>
             <Link href="/rules" className="hover:bg-white/10 text-white block px-4 py-3 rounded-xl text-sm font-bold transition-colors uppercase tracking-wide" onClick={toggleMenu}>Rules</Link>
+            <Link href="/support" className="hover:bg-white/10 text-white block px-4 py-3 rounded-xl text-sm font-bold transition-colors uppercase tracking-wide" onClick={toggleMenu}>Support</Link>
+            <Link href="/faq" className="hover:bg-white/10 text-white block px-4 py-3 rounded-xl text-sm font-bold transition-colors uppercase tracking-wide" onClick={toggleMenu}>FAQ</Link>
             <div className="border-t border-white/10 pt-4 mt-4 space-y-3 px-2">
               {!user ? (
                 <>
