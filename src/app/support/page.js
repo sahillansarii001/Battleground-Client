@@ -80,7 +80,9 @@ const TOP_FAQS = [
 ];
 
 export default function SupportPage() {
-  const [telegramLink, setTelegramLink] = useState("https://t.me/+sT2Jb1LqB_VlMzE1");
+  const [telegramLink, setTelegramLink] = useState(
+    "https://t.me/+sT2Jb1LqB_VlMzE1",
+  );
   const [formData, setFormData] = useState({
     squadName: "",
     captainEmail: "",
@@ -98,7 +100,7 @@ export default function SupportPage() {
   useEffect(() => {
     const fetchCommunityLink = async () => {
       try {
-        const res = await api.get('/public/settings');
+        const res = await api.get("/public/settings");
         if (res?.success && res?.data?.communityLink) {
           setTelegramLink(res.data.communityLink);
           return;
@@ -107,7 +109,7 @@ export default function SupportPage() {
         // Fallback to /public/stats if /public/settings isn't available
       }
       try {
-        const statsRes = await api.get('/public/stats');
+        const statsRes = await api.get("/public/stats");
         if (statsRes?.success && statsRes?.data?.communityLink) {
           setTelegramLink(statsRes.data.communityLink);
         }
@@ -174,7 +176,7 @@ Message: ${ticketResult.message}`;
 
   const handleEmailDirect = () => {
     if (!ticketResult) return;
-    const mailto = `mailto:sahilansari9967747153@gmail.com?subject=${encodeURIComponent(
+    const mailto = `mailto:sahillansarii001@gmail.com?subject=${encodeURIComponent(
       `[${ticketResult.id}] ${ticketResult.urgency.toUpperCase()}: ${ticketResult.subject} - ${ticketResult.squadName}`,
     )}&body=${encodeURIComponent(
       `DISPATCH ID: ${ticketResult.id}\nSQUAD: ${ticketResult.squadName}\nCAPTAIN EMAIL: ${ticketResult.captainEmail}\nIN-GAME ID: ${ticketResult.inGameId}\nCATEGORY: ${ticketResult.category}\nURGENCY: ${ticketResult.urgency}\n\nDETAILS:\n${ticketResult.message}`,
@@ -254,7 +256,8 @@ Message: ${ticketResult.message}`;
               Official Telegram
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              Official community channel for live match schedules, slot allocation, and tournament announcements.
+              Official community channel for live match schedules, slot
+              allocation, and tournament announcements.
             </p>
             <a
               href={telegramLink}
@@ -301,10 +304,10 @@ Message: ${ticketResult.message}`;
               inquiries.
             </p>
             <a
-              href="mailto:sahilansari9967747153@gmail.com"
+              href="mailto:sahillansarii001@gmail.com"
               className="inline-flex items-center gap-1 text-[11px] font-orbitron text-[#FF6A00] hover:text-white uppercase tracking-wider font-bold truncate max-w-full"
             >
-              sahilansari9967747153@gmail.com
+              sahillansarii001@gmail.com
             </a>
           </div>
 
