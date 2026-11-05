@@ -127,10 +127,11 @@ body {
     break-after: auto !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    min-height: 92vh !important;
+    margin: 0 !important;
+    min-height: 85vh !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
+    justify-content: space-between !important;
     box-sizing: border-box !important;
   }
 }

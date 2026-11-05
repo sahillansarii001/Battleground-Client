@@ -664,9 +664,9 @@ export default function Rules() {
           )}
         </div>
 
-        {/* Bottom Official Tournament Creed Banner (Matching Image 4) */}
+        {/* Bottom Official Tournament Creed Banner (Page 16) */}
         <div className="mt-16 bg-[#111518]/90 border border-white/10 p-8 sm:p-12 text-center hud-border relative print-creed-page">
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-3xl mx-auto space-y-6 flex-1 flex flex-col justify-center">
             
             <h2 className="font-orbitron text-2xl sm:text-3xl md:text-4xl font-extrabold text-red-500 uppercase tracking-widest">
               PLAY FAIR. PLAY CLEAN. RESPECT THE GAME.
@@ -710,12 +710,12 @@ export default function Rules() {
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Footer Acceptance Notice */}
-        <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-3 text-[10px] font-orbitron uppercase text-[#B8C0C2]">
-          <span>By entering match lobby or initializing deployment, you accept all directives.</span>
-          <span className="font-mono text-[#FF6A00]">SYSTEM AUTH // BGMI TOURNAMENT PROTOCOL 2026</span>
+          {/* Integrated Footer Acceptance Notice on Page 16 */}
+          <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-3 text-[10px] font-orbitron uppercase text-[#B8C0C2] w-full">
+            <span>By entering match lobby or initializing deployment, you accept all directives.</span>
+            <span className="font-mono text-[#FF6A00]">SYSTEM AUTH // BGMI TOURNAMENT PROTOCOL 2026</span>
+          </div>
         </div>
 
       </div>
