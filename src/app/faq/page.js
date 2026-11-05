@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import api from "@/lib/api";
 import { 
   HelpCircle, Search, ChevronDown, ChevronUp, Shield, 
   ArrowLeft, MessageSquare, AlertTriangle, CheckCircle2, 
@@ -174,10 +175,30 @@ const FAQ_ITEMS = [
 ];
 
 export default function FAQPage() {
+  const [telegramLink, setTelegramLink] = useState("https://t.me/+sT2Jb1LqB_VlMzE1");
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [openItems, setOpenItems] = useState({ "room-credentials": true, "devices": true });
   const [copiedId, setCopiedId] = useState(null);
+
+  useEffect(() => {
+    const fetchCommunityLink = async () => {
+      try {
+        const res = await api.get('/public/settings');
+        if (res?.success && res?.data?.communityLink) {
+          setTelegramLink(res.data.communityLink);
+          return;
+        }
+      } catch (err) {}
+      try {
+        const statsRes = await api.get('/public/stats');
+        if (statsRes?.success && statsRes?.data?.communityLink) {
+          setTelegramLink(statsRes.data.communityLink);
+        }
+      } catch (e) {}
+    };
+    fetchCommunityLink();
+  }, []);
 
   const toggleItem = (id) => {
     setOpenItems((prev) => ({
@@ -487,6 +508,15 @@ export default function FAQPage() {
               >
                 Transmit Support Ticket
               </Link>
+              <a
+                href={telegramLink}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full sm:w-auto bg-[#229ED9]/20 hover:bg-[#229ED9] border border-[#229ED9]/40 text-white hover:text-black px-6 py-3 font-rajdhani font-bold text-sm uppercase tracking-widest transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+              >
+                <span>Telegram Community</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
               <a
                 href="https://wa.me/919967747153?text=BGMI%20Tournament%20Support%20Inquiry"
                 target="_blank"

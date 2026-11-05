@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import api from "@/lib/api";
 import {
   Shield,
   Headphones,
@@ -79,6 +80,7 @@ const TOP_FAQS = [
 ];
 
 export default function SupportPage() {
+  const [telegramLink, setTelegramLink] = useState("https://t.me/+sT2Jb1LqB_VlMzE1");
   const [formData, setFormData] = useState({
     squadName: "",
     captainEmail: "",
@@ -92,6 +94,29 @@ export default function SupportPage() {
   const [submitting, setSubmitting] = useState(false);
   const [ticketResult, setTicketResult] = useState(null);
   const [copiedTicket, setCopiedTicket] = useState(false);
+
+  useEffect(() => {
+    const fetchCommunityLink = async () => {
+      try {
+        const res = await api.get('/public/settings');
+        if (res?.success && res?.data?.communityLink) {
+          setTelegramLink(res.data.communityLink);
+          return;
+        }
+      } catch (err) {
+        // Fallback to /public/stats if /public/settings isn't available
+      }
+      try {
+        const statsRes = await api.get('/public/stats');
+        if (statsRes?.success && statsRes?.data?.communityLink) {
+          setTelegramLink(statsRes.data.communityLink);
+        }
+      } catch (e) {
+        // Fallback already defaults to https://t.me/+sT2Jb1LqB_VlMzE1
+      }
+    };
+    fetchCommunityLink();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -220,25 +245,24 @@ Message: ${ticketResult.message}`;
 
         {/* Direct Emergency Channels Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          {/* Channel 1: Telegram */}
-          <div className="bg-[#111518]/90 border border-white/10 p-5 hud-border hover:border-[#FF6A00]/50 transition-all group">
-            <div className="w-10 h-10 rounded bg-[#5865F2]/10 border border-[#5865F2]/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <MessageSquare className="w-5 h-5 text-[#5865F2]" />
+          {/* Channel 1: Official Telegram */}
+          <div className="bg-[#111518]/90 border border-white/10 p-5 hud-border hover:border-[#229ED9]/50 transition-all group">
+            <div className="w-10 h-10 rounded bg-[#229ED9]/10 border border-[#229ED9]/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Send className="w-5 h-5 text-[#229ED9] -rotate-12 translate-x-0.5" />
             </div>
             <h3 className="font-rajdhani text-lg font-bold uppercase tracking-wider text-white mb-1">
               Official Telegram
             </h3>
             <p className="text-xs text-[#B8C0C2] mb-3 leading-relaxed">
-              Live referee voice channels and automated{" "}
-              <code className="text-[#FF6A00]">#ticket-support</code> bot.
+              Official community channel for live match schedules, slot allocation, and tournament announcements.
             </p>
             <a
-              href="https://Telegram.gg"
+              href={telegramLink}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-orbitron text-[#5865F2] hover:text-white uppercase tracking-wider font-bold"
+              className="inline-flex items-center gap-1.5 text-[11px] font-orbitron text-[#229ED9] hover:text-white uppercase tracking-wider font-bold"
             >
-              Join Server <ExternalLink className="w-3 h-3" />
+              Join Channel <ExternalLink className="w-3 h-3" />
             </a>
           </div>
 
@@ -394,6 +418,16 @@ Message: ${ticketResult.message}`;
                       <Mail className="w-4 h-4" />
                       <span>Send via Email Client</span>
                     </button>
+
+                    <a
+                      href={telegramLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#229ED9]/20 hover:bg-[#229ED9] border border-[#229ED9]/40 text-white hover:text-black px-4 py-2 font-rajdhani font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>Join Telegram Channel</span>
+                    </a>
                   </div>
                 </div>
 
