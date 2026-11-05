@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { Users, AlertOctagon, CheckCircle, ShieldAlert } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Users, AlertOctagon, CheckCircle, ShieldAlert, RefreshCw, AlertTriangle } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function AdminDashboard() {
@@ -11,20 +11,30 @@ export default function AdminDashboard() {
     liveMatches: 0,
     completedMatches: 0
   });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
+
+  const fetchStats = useCallback(async (isRefresh = false) => {
+    try {
+      if (isRefresh) setRefreshing(true);
+      setFetchError(null);
+      const res = await api.get('/admin/dashboard');
+      if (res?.success && res?.data) {
+        setStats(res.data);
+      }
+    } catch (error) {
+      console.warn('Dashboard stats sync notice:', error?.message || 'Unable to sync live stats');
+      setFetchError(error?.message || 'Live backend connection offline or awaiting credentials');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await api.get('/admin/dashboard');
-        if (res.success) {
-          setStats(res.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch stats', error);
-      }
-    };
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   return (
     <div className="space-y-6">
@@ -36,9 +46,40 @@ export default function AdminDashboard() {
             <ShieldAlert className="w-6 h-6 sm:w-8 sm:h-8 text-[#FF6A00]" />
             Global Overwatch
           </h2>
-          <p className="font-inter text-xs sm:text-sm text-[#B8C0C2] mt-2 sm:mt-1 ml-8 sm:ml-11">Tournament Management System Online.</p>
+          <p className="font-inter text-xs sm:text-sm text-[#B8C0C2] mt-2 sm:mt-1 ml-8 sm:ml-11">
+            Tournament Management System Online.
+          </p>
+        </div>
+
+        <div className="mt-4 sm:mt-0 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => fetchStats(true)}
+            disabled={refreshing}
+            className="flex items-center gap-2 bg-[#1A2023] hover:bg-[#FF6A00]/20 border border-white/10 hover:border-[#FF6A00] text-white px-4 py-2 font-rajdhani font-bold text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+            title="Refresh dashboard stats"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-[#FF6A00] ${refreshing ? 'animate-spin' : ''}`} />
+            <span>{refreshing ? 'Syncing...' : 'Sync Intel'}</span>
+          </button>
         </div>
       </div>
+
+      {fetchError && (
+        <div className="bg-yellow-500/10 border border-yellow-500/30 p-3.5 flex items-center justify-between text-xs text-yellow-400 font-inter">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{fetchError}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => fetchStats(true)}
+            className="text-white hover:text-[#FF6A00] font-orbitron uppercase tracking-wider text-[10px] font-bold underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
