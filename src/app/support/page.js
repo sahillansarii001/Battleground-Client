@@ -284,12 +284,12 @@ Message: ${ticketResult.message}`;
               leaders.
             </p>
             <a
-              href="https://wa.me/919967747153?text=BGMI%20Tournament%20Support%20Inquiry"
+              href="https://wa.me/919284299128?text=BGMI%20Tournament%20Support%20Inquiry"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-[11px] font-orbitron text-[#39B54A] hover:text-white uppercase tracking-wider font-bold"
             >
-              +91 9967747153 <ExternalLink className="w-3 h-3" />
+              +91 9284299128 <ExternalLink className="w-3 h-3" />
             </a>
           </div>
 
@@ -657,7 +657,7 @@ Message: ${ticketResult.message}`;
                 <li>Verify your spam/junk folder for automated credentials</li>
                 <li>
                   Reach out immediately on WhatsApp Hotline:{" "}
-                  <span className="text-white font-bold">+91 9967747153</span>
+                  <span className="text-white font-bold">+91 9284299128</span>
                 </li>
                 <li>Do NOT enter unauthorized slots once inside room</li>
               </ul>

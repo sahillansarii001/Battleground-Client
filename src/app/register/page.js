@@ -191,8 +191,8 @@ export default function Register() {
   };
 
   const validateStep1 = () => {
-    if (!formData.teamName || !formData.email || !formData.logo) {
-      setError("ALL SQUAD INTEL REQUIRED (INCLUDING INSIGNIA)");
+    if (!formData.teamName || !formData.email) {
+      setError("ALL SQUAD INTEL REQUIRED (SQUAD NAME & EMAIL)");
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -460,7 +460,10 @@ export default function Register() {
                   </div>
 
                   <div className="flex flex-col h-full">
-                    <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase mb-1">Squad Insignia</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase">Squad Insignia</label>
+                      <span className="font-mono text-[9px] text-[#B8C0C2]/60 uppercase tracking-wider">(Optional)</span>
+                    </div>
                     <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 min-h-40">
                       {!preview && (
                         <input type="file" accept="image/*" onChange={handleLogoChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -485,6 +488,7 @@ export default function Register() {
                         <div className="text-center">
                           <UploadCloud className="h-6 w-6 text-[#FF6A00] mx-auto mb-2 opacity-80" />
                           <span className="font-rajdhani text-sm font-bold text-white uppercase tracking-widest">Select Image</span>
+                          <span className="block text-[10px] text-[#B8C0C2]/60 font-mono mt-1">Optional • Can be added later</span>
                         </div>
                       )}
                     </div>
