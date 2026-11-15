@@ -151,7 +151,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc list-inside space-y-2 pl-2">
               <li>
                 <strong className="text-white">Squad Data:</strong> Squad name,
-                logo insignia, registration type (SOLO, DUO, SQUAD), and
+                logo logo, registration type (SOLO, DUO, SQUAD), and
                 assigned slots.
               </li>
               <li>
@@ -216,7 +216,7 @@ export default function PrivacyPolicy() {
               information to third-party advertisers. Information is only shared
               with authorized infrastructure providers necessary to power the
               portal (such as Google Cloud / SMTP servers for transactional
-              notification emails and Cloudinary for hosting squad insignias).
+              notification emails and Cloudinary for hosting squad logos).
             </p>
           </section>
 

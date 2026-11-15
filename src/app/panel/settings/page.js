@@ -171,7 +171,7 @@ export default function PanelSettings() {
             
             {/* Logo Upload */}
             <div className="flex flex-col items-center space-y-4 shrink-0">
-              <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase text-center">Squad Insignia</label>
+              <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase text-center">Squad Logo</label>
               <div 
                 className="w-32 h-32 bg-[#080A0C] border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#FF6A00]/50 transition-colors relative group"
                 onClick={() => fileInputRef.current?.click()}

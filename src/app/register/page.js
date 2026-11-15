@@ -461,7 +461,7 @@ export default function Register() {
 
                   <div className="flex flex-col h-full">
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase">Squad Insignia</label>
+                      <label className="block font-orbitron text-[9px] text-[#B8C0C2] tracking-widest uppercase">Squad Logo</label>
                       <span className="font-mono text-[9px] text-[#B8C0C2]/60 uppercase tracking-wider">(Optional)</span>
                     </div>
                     <div className="flex-1 bg-[#080A0C] border-2 border-dashed border-white/10 hover:border-[#FF6A00]/50 relative flex flex-col items-center justify-center p-4 min-h-40">
@@ -557,7 +557,7 @@ export default function Register() {
                   {/* Squad Intel Summary */}
                   <div className="flex-1 bg-[#080A0C] border border-white/5 p-4 flex items-center gap-4">
                     {preview ? (
-                      <img src={preview} alt="Squad Insignia" className="w-16 h-16 object-cover border border-[#FF6A00]/30 shadow-[0_0_10px_rgba(255,106,0,0.2)]" />
+                      <img src={preview} alt="Squad Logo" className="w-16 h-16 object-cover border border-[#FF6A00]/30 shadow-[0_0_10px_rgba(255,106,0,0.2)]" />
                     ) : (
                       <div className="w-16 h-16 bg-[#111518] flex items-center justify-center border border-white/10">
                         <Users className="w-6 h-6 text-[#B8C0C2]" />
