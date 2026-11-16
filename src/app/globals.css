@@ -62,11 +62,11 @@ input[type="number"] {
   appearance: textfield;
 }
 
-/* Tactical Dark & Orange Styling for Date / Time picker indicators */
+/* Tactical Styling for Date / Time picker indicators (Pure White) */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  filter: invert(53%) sepia(89%) saturate(2470%) hue-rotate(360deg) brightness(101%) contrast(106%);
+  filter: invert(1);
   opacity: 0.95;
   padding: 4px;
   border-radius: 4px;

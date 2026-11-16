@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, Hash, Trophy, Compass, Users, X } from 'lucide-react';
+import TacticalDatePicker from '@/components/ui/TacticalDatePicker';
+import TacticalTimePicker from '@/components/ui/TacticalTimePicker';
 
 export default function MatchModal({ isOpen, onClose, onSubmit, initialData = null, availableMaps = [], errorMsg = null }) {
   const [matchNum, setMatchNum] = useState('');
@@ -154,49 +156,33 @@ export default function MatchModal({ isOpen, onClose, onSubmit, initialData = nu
               />
             </div>
 
-            {/* Date and Time */}
+            {/* Date and Time Custom Pickers */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="flex items-center gap-1.5 text-[#B8C0C2] text-xs font-semibold uppercase tracking-wider mb-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-[#FF6A00]" />
+                  <Calendar className="w-3.5 h-3.5 text-white" />
                   Date
                 </label>
-                <div className="relative">
-                  <input 
-                    type="date" 
-                    name="date" 
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    onClick={(e) => {
-                      try {
-                        e.target.showPicker?.();
-                      } catch (err) {}
-                    }}
-                    required 
-                    className="w-full bg-[#080A0C] border border-white/10 px-3.5 py-2.5 text-white font-mono text-sm cursor-pointer [color-scheme:dark] focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00]/50 outline-none transition-colors" 
-                  />
-                </div>
+                <TacticalDatePicker
+                  name="date"
+                  value={date}
+                  onChange={(newDate) => setDate(newDate)}
+                  placeholder="Select Date"
+                  required
+                />
               </div>
               <div>
                 <label className="flex items-center gap-1.5 text-[#B8C0C2] text-xs font-semibold uppercase tracking-wider mb-1.5">
-                  <Clock className="w-3.5 h-3.5 text-[#FF6A00]" />
+                  <Clock className="w-3.5 h-3.5 text-white" />
                   Start Time
                 </label>
-                <div className="relative">
-                  <input 
-                    type="time" 
-                    name="startTime" 
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    onClick={(e) => {
-                      try {
-                        e.target.showPicker?.();
-                      } catch (err) {}
-                    }}
-                    required 
-                    className="w-full bg-[#080A0C] border border-white/10 px-3.5 py-2.5 text-white font-mono text-sm cursor-pointer [color-scheme:dark] focus:border-[#FF6A00] focus:ring-1 focus:ring-[#FF6A00]/50 outline-none transition-colors" 
-                  />
-                </div>
+                <TacticalTimePicker
+                  name="startTime"
+                  value={startTime}
+                  onChange={(newTime) => setStartTime(newTime)}
+                  placeholder="Select Time"
+                  required
+                />
               </div>
             </div>
 
