@@ -157,7 +157,7 @@ export default function MatchModal({ isOpen, onClose, onSubmit, initialData = nu
             </div>
 
             {/* Date and Time Custom Pickers */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 relative z-30">
               <div>
                 <label className="flex items-center gap-1.5 text-[#B8C0C2] text-xs font-semibold uppercase tracking-wider mb-1.5">
                   <Calendar className="w-3.5 h-3.5 text-white" />
@@ -168,6 +168,7 @@ export default function MatchModal({ isOpen, onClose, onSubmit, initialData = nu
                   value={date}
                   onChange={(newDate) => setDate(newDate)}
                   placeholder="Select Date"
+                  preferredPlacement="up"
                   required
                 />
               </div>
@@ -181,13 +182,14 @@ export default function MatchModal({ isOpen, onClose, onSubmit, initialData = nu
                   value={startTime}
                   onChange={(newTime) => setStartTime(newTime)}
                   placeholder="Select Time"
+                  preferredPlacement="up"
                   required
                 />
               </div>
             </div>
 
             {/* Map and Mode */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 relative z-10">
               <div>
                 <label className="flex items-center gap-1.5 text-[#B8C0C2] text-xs font-semibold uppercase tracking-wider mb-1.5">
                   <Compass className="w-3.5 h-3.5 text-[#FF6A00]" />

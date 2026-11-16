@@ -15,9 +15,11 @@ export default function TacticalDatePicker({
   onChange,
   placeholder = 'Select Date',
   name = 'date',
+  preferredPlacement = 'up',
   required = false
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [placement, setPlacement] = useState(preferredPlacement);
   const containerRef = useRef(null);
 
   // Parse initial view year and month from value or today
@@ -51,6 +53,23 @@ export default function TacticalDatePicker({
     }
   }, [value]);
 
+  // Determine smart placement if auto or calculate bounds
+  useEffect(() => {
+    if (isOpen) {
+      if (preferredPlacement === 'auto' && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        if (spaceBelow < 280) {
+          setPlacement('up');
+        } else {
+          setPlacement('down');
+        }
+      } else {
+        setPlacement(preferredPlacement);
+      }
+    }
+  }, [isOpen, preferredPlacement]);
+
   // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -58,11 +77,17 @@ export default function TacticalDatePicker({
         setIsOpen(false);
       }
     };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('keydown', handleKeyDown);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
@@ -173,6 +198,10 @@ export default function TacticalDatePicker({
   const today = new Date();
   const todayYMD = formatYMD(today.getFullYear(), today.getMonth(), today.getDate());
 
+  const positionClass = placement === 'up'
+    ? 'bottom-full left-0 mb-1.5'
+    : 'top-full left-0 mt-1.5';
+
   return (
     <div className="relative w-full" ref={containerRef}>
       {/* Hidden input for HTML form submission */}
@@ -192,9 +221,9 @@ export default function TacticalDatePicker({
         <Calendar className="w-4 h-4 text-white shrink-0 ml-2" />
       </button>
 
-      {/* Custom Calendar Dropdown */}
+      {/* Custom Tactical Calendar Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1.5 z-50 w-72 bg-[#111518] border border-white/15 p-4 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+        <div className={`absolute ${positionClass} z-50 w-72 bg-[#111518] border border-white/20 p-3.5 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150`}>
           {/* Tactical Corner Accents */}
           <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#FF6A00]" />
           <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#FF6A00]" />
@@ -202,7 +231,7 @@ export default function TacticalDatePicker({
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#FF6A00]" />
 
           {/* Month / Year Header */}
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+          <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-white/10">
             <span className="font-rajdhani font-bold text-white uppercase text-base tracking-widest">
               {MONTH_NAMES[viewMonth]} {viewYear}
             </span>
@@ -227,7 +256,7 @@ export default function TacticalDatePicker({
           </div>
 
           {/* Weekday Labels */}
-          <div className="grid grid-cols-7 gap-1 mb-1.5 text-center">
+          <div className="grid grid-cols-7 gap-1 mb-1 text-center">
             {DAYS_OF_WEEK.map((day) => (
               <span key={day} className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                 {day}
@@ -247,7 +276,7 @@ export default function TacticalDatePicker({
                   key={idx}
                   type="button"
                   onClick={() => handleSelectDay(cell.year, cell.month, cell.day)}
-                  className={`h-8 w-8 text-xs font-mono font-medium rounded-sm flex items-center justify-center transition-all cursor-pointer ${
+                  className={`h-7 w-7 text-xs font-mono font-medium rounded-sm flex items-center justify-center transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-[#FF6A00] text-black font-bold shadow-md shadow-[#FF6A00]/40 scale-105'
                       : isToday
@@ -264,7 +293,7 @@ export default function TacticalDatePicker({
           </div>
 
           {/* Footer Controls: Clear & Today */}
-          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/10 text-xs font-mono">
+          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-white/10 text-xs font-mono">
             <button
               type="button"
               onClick={handleClear}

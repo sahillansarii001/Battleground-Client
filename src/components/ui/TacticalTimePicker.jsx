@@ -8,9 +8,11 @@ export default function TacticalTimePicker({
   onChange,
   placeholder = 'Select Time',
   name = 'startTime',
+  preferredPlacement = 'up',
   required = false
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [placement, setPlacement] = useState(preferredPlacement);
   const containerRef = useRef(null);
   const hourListRef = useRef(null);
   const minuteListRef = useRef(null);
@@ -56,18 +58,41 @@ export default function TacticalTimePicker({
     }
   }, [value]);
 
-  // Click outside to close
+  // Determine smart placement
+  useEffect(() => {
+    if (isOpen) {
+      if (preferredPlacement === 'auto' && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        if (spaceBelow < 280) {
+          setPlacement('up');
+        } else {
+          setPlacement('down');
+        }
+      } else {
+        setPlacement(preferredPlacement);
+      }
+    }
+  }, [isOpen, preferredPlacement]);
+
+  // Click outside to close & Escape key
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('keydown', handleKeyDown);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen]);
 
@@ -139,6 +164,10 @@ export default function TacticalTimePicker({
   // 0 to 59
   const minutes = Array.from({ length: 60 }, (_, i) => i);
 
+  const positionClass = placement === 'up'
+    ? 'bottom-full right-0 mb-1.5'
+    : 'top-full right-0 mt-1.5';
+
   return (
     <div className="relative w-full" ref={containerRef}>
       {/* Hidden input for HTML form submission */}
@@ -158,9 +187,9 @@ export default function TacticalTimePicker({
         <Clock className="w-4 h-4 text-white shrink-0 ml-2" />
       </button>
 
-      {/* Custom 3-Column Time Dropdown matching Screenshot */}
+      {/* Custom 3-Column Time Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1.5 z-50 w-64 bg-[#111518] border border-white/15 p-3.5 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
+        <div className={`absolute ${positionClass} z-50 w-64 bg-[#111518] border border-white/20 p-3 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150`}>
           {/* Tactical Corner Accents */}
           <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#FF6A00]" />
           <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#FF6A00]" />
@@ -168,7 +197,7 @@ export default function TacticalTimePicker({
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#FF6A00]" />
 
           {/* Selected Time Banner */}
-          <div className="bg-[#080A0C] border border-white/10 py-1.5 px-3 mb-3 text-center">
+          <div className="bg-[#080A0C] border border-white/10 py-1.5 px-3 mb-2.5 text-center">
             <span className="text-[10px] font-mono text-[#FF6A00] uppercase tracking-widest block">
               SET TIME //
             </span>
@@ -187,7 +216,7 @@ export default function TacticalTimePicker({
               </span>
               <div
                 ref={hourListRef}
-                className="h-44 overflow-y-auto space-y-1 pr-1 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm [scrollbar-width:thin] [scrollbar-color:#3f3f46_transparent]"
+                className="h-36 overflow-y-auto space-y-1 pr-1 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm scrollbar-thin [scrollbar-color:#3f3f46_transparent]"
               >
                 {hours.map((h) => {
                   const isSelected = selectedHour === h;
@@ -217,7 +246,7 @@ export default function TacticalTimePicker({
               </span>
               <div
                 ref={minuteListRef}
-                className="h-44 overflow-y-auto space-y-1 pr-1 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm [scrollbar-width:thin] [scrollbar-color:#3f3f46_transparent]"
+                className="h-36 overflow-y-auto space-y-1 pr-1 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm scrollbar-thin [scrollbar-color:#3f3f46_transparent]"
               >
                 {minutes.map((m) => {
                   const isSelected = selectedMinute === m;
@@ -245,7 +274,7 @@ export default function TacticalTimePicker({
               <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase text-center mb-1">
                 AM/PM
               </span>
-              <div className="h-44 flex flex-col justify-start space-y-2 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm">
+              <div className="h-36 flex flex-col justify-start space-y-2 bg-[#080A0C]/60 border border-white/5 p-1 rounded-sm">
                 {['AM', 'PM'].map((p) => {
                   const isSelected = selectedPeriod === p;
                   return (
@@ -268,7 +297,7 @@ export default function TacticalTimePicker({
           </div>
 
           {/* Footer Controls: Now & Done */}
-          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/10">
+          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-white/10">
             <button
               type="button"
               onClick={handleNow}
