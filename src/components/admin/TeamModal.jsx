@@ -103,8 +103,8 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
         setError(`Please fill in all details for operator ${p.inGameName || p.playerName || ''}`);
         return;
       }
-      if (!/^\d{10}$/.test(p.bgmiId)) {
-        setError(`BGMI ID for ${p.inGameName || 'operator'} must be exactly 10 digits.`);
+      if (!/^\d{10,11}$/.test(p.bgmiId)) {
+        setError(`BGMI ID for ${p.inGameName || 'operator'} must be 10 or 11 digits.`);
         return;
       }
     }
@@ -221,7 +221,7 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                           <input type="text" value={player.bgmiId || ''} 
                             onChange={(e) => {
                               const val = e.target.value.replace(/\D/g, '');
-                              if (val.length <= 10) {
+                              if (val.length <= 11) {
                                 handlePlayerChange(index, 'bgmiId', val);
                               }
                             }} 

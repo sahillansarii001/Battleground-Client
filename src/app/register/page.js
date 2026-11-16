@@ -213,8 +213,8 @@ export default function Register() {
         setError(`OPERATOR 0${i + 1} DATA INCOMPLETE`);
         return false;
       }
-      if (!/^\d{10}$/.test(players[i].bgmiId)) {
-        setError(`OPERATOR 0${i + 1} BGMI ID MUST BE EXACTLY 10 DIGITS`);
+      if (!/^\d{10,11}$/.test(players[i].bgmiId)) {
+        setError(`OPERATOR 0${i + 1} BGMI ID MUST BE 10 OR 11 DIGITS`);
         return false;
       }
     }
@@ -525,7 +525,7 @@ export default function Register() {
                           type="text" placeholder="BGMI ID" value={player.bgmiId} 
                           onChange={e => {
                             const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                            if (val.length <= 10) {
+                            if (val.length <= 11) {
                               handlePlayerChange(index, 'bgmiId', val);
                             }
                           }}
