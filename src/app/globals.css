@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: dark;
+  accent-color: #FF6A00;
   --background: #080A0C;
   --foreground: #FFFFFF;
   --charcoal: #111518;
@@ -47,6 +49,40 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--bgmi-orange);
+}
+
+/* Remove spin buttons from number inputs globally */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Tactical Dark & Orange Styling for Date / Time picker indicators */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(53%) sepia(89%) saturate(2470%) hue-rotate(360deg) brightness(101%) contrast(106%);
+  opacity: 0.95;
+  padding: 4px;
+  border-radius: 4px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Ensure native picker popups use dark background */
+input[type="date"],
+input[type="time"] {
+  color-scheme: dark;
 }
 
 /* Gaming HUD elements */
