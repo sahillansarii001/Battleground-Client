@@ -538,9 +538,9 @@ export default function Register() {
                           className="bg-[#111518] border-white/5 px-3 py-2 text-xs"
                           options={[
                             { value: 'IGL', label: 'IGL' },
-                            { value: 'Assaulter', label: 'Assaulter' },
-                            { value: 'Sniper', label: 'Sniper' },
-                            { value: 'Support', label: 'Support' }
+                            { value: 'ASSAULTER', label: 'Assaulter' },
+                            { value: 'SNIPER', label: 'Sniper' },
+                            { value: 'SUPPORT', label: 'Support' }
                           ]}
                         />
                       </div>
@@ -578,7 +578,7 @@ export default function Register() {
                     {players.map((p, i) => (
                       <div key={i} className="flex items-center justify-between bg-[#111518] p-2 border-l-2 border-[#FF6A00]">
                         <div>
-                          <div className="font-rajdhani font-bold text-white uppercase text-sm">{p.inGameName} {i === 0 && <span className="text-[#FF6A00] ml-1 text-[10px]">[IGL]</span>}</div>
+                          <div className="font-rajdhani font-bold text-white uppercase text-sm">{p.inGameName} {i === 0 && <span className="text-[#FF6A00] ml-1 text-[10px]">[CAPTAIN]</span>}</div>
                           <div className="font-inter text-[10px] text-[#B8C0C2] uppercase mt-0.5">ID: {p.bgmiId}</div>
                         </div>
                         {p.role && (

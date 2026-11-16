@@ -3,6 +3,18 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Save, Trash2, Key, Edit, Shield } from 'lucide-react';
 import api from '@/lib/api';
 
+const normalizeRole = (role) => {
+  if (!role) return 'ASSAULTER';
+  const clean = String(role).trim().toUpperCase();
+  if (clean === 'IGL') return 'IGL';
+  if (clean === 'ASSAULTER' || clean.includes('ASSAULT')) return 'ASSAULTER';
+  if (clean === 'SNIPER' || clean.includes('SNIP')) return 'SNIPER';
+  if (clean === 'SUPPORT' || clean.includes('SUPP')) return 'SUPPORT';
+  if (clean === 'FRAGGER' || clean.includes('FRAG')) return 'FRAGGER';
+  if (clean === 'SCOUT' || clean.includes('SCOUT')) return 'SCOUT';
+  return clean;
+};
+
 export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
   const [formData, setFormData] = useState({
     teamName: '',
@@ -32,7 +44,10 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
         teamName: team.teamName || '',
         email: team.email || '',
         teamType: team.teamType || 'SQUAD',
-        players: (team.players || []).map(p => ({ ...p, role: p.role || 'ASSAULTER' }))
+        players: (team.players || []).map(p => ({
+          ...p,
+          role: normalizeRole(p.role)
+        }))
       });
     }
   }, [team]);
@@ -103,7 +118,14 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
     setLoading(true);
     setError(null);
     try {
-      await api.put(`/admin/teams/${team._id}`, formData);
+      const payload = {
+        ...formData,
+        players: formData.players.map(p => ({
+          ...p,
+          role: normalizeRole(p.role)
+        }))
+      };
+      await api.put(`/admin/teams/${team._id}`, payload);
       onSuccess();
     } catch (err) {
       setError(err.message || err.response?.data?.message || 'Failed to update team');
@@ -208,13 +230,20 @@ export default function TeamModal({ isOpen, onClose, team, onSuccess }) {
                         </div>
                         <div>
                           <label className="block font-orbitron text-[9px] text-[#B8C0C2] uppercase mb-1">Role</label>
-                          <select value={player.role || 'ASSAULTER'} onChange={(e) => handlePlayerChange(index, 'role', e.target.value)} className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00] outline-none">
+                          <select 
+                            value={normalizeRole(player.role)} 
+                            onChange={(e) => handlePlayerChange(index, 'role', e.target.value)} 
+                            className="w-full bg-[#111518] border border-white/10 text-white text-xs px-2 py-1 focus:border-[#FF6A00] outline-none"
+                          >
                             <option value="IGL">IGL</option>
                             <option value="ASSAULTER">ASSAULTER</option>
                             <option value="SNIPER">SNIPER</option>
                             <option value="SUPPORT">SUPPORT</option>
                             <option value="FRAGGER">FRAGGER</option>
                             <option value="SCOUT">SCOUT</option>
+                            {!['IGL', 'ASSAULTER', 'SNIPER', 'SUPPORT', 'FRAGGER', 'SCOUT'].includes(normalizeRole(player.role)) && (
+                              <option value={normalizeRole(player.role)}>{normalizeRole(player.role)}</option>
+                            )}
                           </select>
                         </div>
                       </div>

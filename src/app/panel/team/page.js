@@ -87,6 +87,11 @@ export default function Team() {
                       </h4>
                       {index === 0 && (
                         <span className="bg-[#FF6A00] text-black font-orbitron font-bold text-[9px] px-2 py-0.5 tracking-widest">
+                          CAPTAIN
+                        </span>
+                      )}
+                      {player.role?.toUpperCase() === 'IGL' && index !== 0 && (
+                        <span className="bg-yellow-500 text-black font-orbitron font-bold text-[9px] px-2 py-0.5 tracking-widest">
                           IGL
                         </span>
                       )}
@@ -94,7 +99,7 @@ export default function Team() {
                   </div>
                   
                   <div className="bg-[#111518] border border-white/10 font-orbitron text-[9px] text-[#B8C0C2] uppercase tracking-[0.15em] px-3 py-1 group-hover:text-white transition-colors">
-                    {player.role || 'ASSAULTER'}
+                    {player.role ? player.role.toUpperCase() : 'ASSAULTER'}
                   </div>
                 </div>
                 
