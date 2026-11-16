@@ -78,9 +78,9 @@ export default function AdminTeams() {
   const deleteTeam = (id) => {
     setActionModal({
       isOpen: true,
-      title: 'Delete Team',
-      message: 'Are you sure you want to completely delete this team and its user account? This cannot be undone.',
-      confirmText: 'Delete',
+      title: 'Deactivate / Delete Team',
+      message: 'Are you sure you want to delete this squad? The squad and all its operators will be deactivated (isActive: false).',
+      confirmText: 'Deactivate',
       isDanger: true,
       onConfirm: async () => {
         try {

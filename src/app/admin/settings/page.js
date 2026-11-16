@@ -5,7 +5,7 @@ import api from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminSettings() {
-  const { user, login } = useAuth();
+  const { user, login, refreshUser } = useAuth();
   const [communityLink, setCommunityLink] = useState('');
   const [prizePool, setPrizePool] = useState('50K');
   const [mapsStr, setMapsStr] = useState('ERANGEL, MIRAMAR, SANHOK, VIKENDI');
@@ -20,7 +20,7 @@ export default function AdminSettings() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(user?.profilePhoto || null);
   const fileInputRef = useRef(null);
 
   // Password state
@@ -60,6 +60,8 @@ export default function AdminSettings() {
           setEmail(profileRes.data.email || '');
           if (profileRes.data.profilePhoto) {
             setPhotoPreview(profileRes.data.profilePhoto);
+          } else if (user?.profilePhoto) {
+            setPhotoPreview(user.profilePhoto);
           }
         }
       } catch (err) {
@@ -129,16 +131,22 @@ export default function AdminSettings() {
         formData.append('profilePhoto', profilePhoto);
       }
       
-      const res = await api.put('/admin/profile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await api.put('/admin/profile', formData);
       
       if (res.success) {
         setSuccessMsg('Profile updated successfully');
+        const updatedPhoto = res.data.profilePhoto || photoPreview;
+        setPhotoPreview(updatedPhoto);
         // Update user context with new email if it changed
-        const updatedUser = { ...user, email: res.data.email, name: res.data.name, profilePhoto: res.data.profilePhoto };
+        const updatedUser = { 
+          ...user, 
+          email: res.data.email, 
+          name: res.data.name, 
+          profilePhoto: updatedPhoto 
+        };
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        setTimeout(() => window.location.reload(), 1500);
+        if (refreshUser) refreshUser();
+        setTimeout(() => window.location.reload(), 1200);
       }
     } catch (err) {
       setErrorMsg(err.message || 'Failed to save profile');
@@ -256,11 +264,11 @@ export default function AdminSettings() {
                 className="w-16 h-16 rounded-full border border-white/20 bg-black overflow-hidden flex items-center justify-center cursor-pointer relative group"
                 onClick={() => fileInputRef.current?.click()}
               >
-                {photoPreview ? (
-                  <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-8 h-8 text-white/50" />
-                )}
+                <img 
+                  src={photoPreview || user?.profilePhoto || "/BattlegroundLogo.png"} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover" 
+                />
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <ImageIcon className="w-5 h-5 text-white" />
                 </div>

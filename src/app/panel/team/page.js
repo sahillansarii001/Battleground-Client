@@ -8,7 +8,7 @@ export default function Team() {
   return (
     <div className="space-y-8">
       {/* Tactical Header */}
-      <div className="bg-[#080A0C] border border-white/5 relative flex flex-col md:flex-row items-stretch min-h-[160px]">
+      <div className="bg-[#080A0C] border border-white/5 relative flex flex-col md:flex-row items-stretch min-h-40">
         {/* Left Accent Bar */}
         <div className="hidden md:block w-2 bg-[#FF6A00]"></div>
         
