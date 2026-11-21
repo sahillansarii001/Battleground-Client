@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useMemo, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Save, ArrowLeft, ChevronDown, ChevronUp, Edit, X } from 'lucide-react';
+import { Save, ArrowLeft, ChevronDown, ChevronUp, Edit, X, AlertTriangle } from 'lucide-react';
 import api from '@/lib/api';
 import ActionModal from '@/components/admin/ActionModal';
 
@@ -150,7 +150,55 @@ export default function MatchResults() {
     });
   };
 
+  // Calculate any duplicate placements for non-zero ranks
+  const duplicatePlacements = useMemo(() => {
+    const counts = {};
+    scores.forEach(s => {
+      const p = Number(s.placement);
+      if (p > 0) counts[p] = (counts[p] || 0) + 1;
+    });
+    return Object.keys(counts).filter(p => counts[p] > 1).map(Number);
+  }, [scores]);
+
+  const conflictingTeams = useMemo(() => {
+    if (duplicatePlacements.length === 0) return [];
+    return scores
+      .filter(s => duplicatePlacements.includes(Number(s.placement)))
+      .map(s => {
+        const t = teams.find(team => team._id === s.teamId);
+        return {
+          placement: Number(s.placement),
+          teamName: t ? t.teamName : 'Unknown Team'
+        };
+      });
+  }, [scores, duplicatePlacements, teams]);
+
+  const validatePlacements = () => {
+    if (duplicatePlacements.length > 0) {
+      const conflictDescriptions = duplicatePlacements.map(rank => {
+        const teamNames = conflictingTeams
+          .filter(c => c.placement === rank)
+          .map(c => `"${c.teamName}"`)
+          .join(' and ');
+        return `Rank #${rank} is assigned to ${teamNames}`;
+      }).join('; ');
+
+      setActionModal({
+        isOpen: true,
+        isAlert: true,
+        isDanger: true,
+        title: 'DUPLICATE RANKING DETECTED',
+        message: `Each team must have a unique rank for this match. ${conflictDescriptions}. Please resolve the conflicting ranks before saving or publishing.`,
+        confirmText: 'FIX RANKINGS',
+        onConfirm: () => setActionModal({ isOpen: false })
+      });
+      return false;
+    }
+    return true;
+  };
+
   const saveDraft = async () => {
+    if (!validatePlacements()) return;
     try {
       await api.post(`/matches/${id}/results`, { scores });
       setActionModal({ isOpen: true, isAlert: true, title: 'Saved', message: 'Results saved as Draft. They are NOT visible on the public scoreboard yet.', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
@@ -158,11 +206,13 @@ export default function MatchResults() {
       fetchData();
     } catch (error) {
       console.error(error);
-      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to save results', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      const errorMsg = error.response?.data?.message || 'Failed to save results';
+      setActionModal({ isOpen: true, isAlert: true, isDanger: true, title: 'Error', message: errorMsg, confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
   const saveAndPublish = async () => {
+    if (!validatePlacements()) return;
     try {
       await api.post(`/matches/${id}/results`, { scores });
       await api.put(`/matches/${id}/results/verify`);
@@ -176,7 +226,8 @@ export default function MatchResults() {
       fetchData();
     } catch (error) {
       console.error(error);
-      setActionModal({ isOpen: true, isAlert: true, title: 'Error', message: 'Failed to publish results', confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
+      const errorMsg = error.response?.data?.message || 'Failed to publish results';
+      setActionModal({ isOpen: true, isAlert: true, isDanger: true, title: 'Error', message: errorMsg, confirmText: 'OK', onConfirm: () => setActionModal({ isOpen: false }) });
     }
   };
 
@@ -205,10 +256,24 @@ export default function MatchResults() {
               <button onClick={() => { setIsEditing(false); fetchData(); }} className="flex items-center gap-2 bg-[#1A2023] border border-white/10 hover:border-white/30 text-[#B8C0C2] hover:text-white px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
                 <X className="w-4 h-4" /> Cancel
               </button>
-              <button onClick={saveDraft} className="flex items-center gap-2 bg-[#FF6A00]/20 hover:bg-[#FF6A00]/40 text-[#FF6A00] border border-[#FF6A00]/50 px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+              <button 
+                onClick={saveDraft} 
+                className={`flex items-center gap-2 px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors ${
+                  duplicatePlacements.length > 0
+                    ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50'
+                    : 'bg-[#FF6A00]/20 hover:bg-[#FF6A00]/40 text-[#FF6A00] border border-[#FF6A00]/50'
+                }`}
+              >
                 <Save className="w-4 h-4" /> Save Draft
               </button>
-              <button onClick={saveAndPublish} className="flex items-center gap-2 bg-[#FF6A00] hover:bg-[#FF6A00]/80 text-black px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors">
+              <button 
+                onClick={saveAndPublish} 
+                className={`flex items-center gap-2 px-5 py-2.5 font-bold uppercase tracking-widest font-rajdhani transition-colors ${
+                  duplicatePlacements.length > 0
+                    ? 'bg-red-600/30 hover:bg-red-600/40 text-red-300 border border-red-500'
+                    : 'bg-[#FF6A00] hover:bg-[#FF6A00]/80 text-black'
+                }`}
+              >
                 <Save className="w-4 h-4" /> Save & Publish
               </button>
             </>
@@ -220,12 +285,29 @@ export default function MatchResults() {
         </div>
       </div>
 
+      {duplicatePlacements.length > 0 && (
+        <div className="bg-red-500/10 border border-red-500/50 p-4 flex items-start gap-3 backdrop-blur-sm">
+          <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5 animate-pulse" />
+          <div className="text-xs">
+            <div className="font-orbitron font-bold text-red-400 uppercase tracking-wider flex items-center gap-2">
+              Ranking Conflict Detected
+              <span className="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 border border-red-500/30">
+                {duplicatePlacements.length} {duplicatePlacements.length === 1 ? 'Rank Conflict' : 'Rank Conflicts'}
+              </span>
+            </div>
+            <p className="font-inter text-red-300/90 mt-1.5 leading-relaxed">
+              Duplicate placements assigned for {duplicatePlacements.map(p => `Rank #${p}`).join(', ')}. Each participating squad must have a unique rank for this match before results can be saved or published.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-[#080A0C] border border-white/10 overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#111518] border-b border-white/10 font-orbitron text-[10px] text-[#FF6A00] uppercase tracking-widest">
               <th className="p-4">Squad</th>
-              <th className="p-4 w-24 text-center">Place</th>
+              <th className="p-4 w-28 text-center">Place</th>
               <th className="p-4 w-32 text-center">Place Pts</th>
               <th className="p-4 w-24 text-center">Kills</th>
               <th className="p-4 w-32 text-center">Kill Pts</th>
@@ -238,10 +320,11 @@ export default function MatchResults() {
               if (!team) return null;
               const isReadOnly = !isEditing;
               const isExpanded = expandedTeamId === score.teamId;
+              const isDuplicate = Number(score.placement) > 0 && duplicatePlacements.includes(Number(score.placement));
               
               return (
                 <Fragment key={score.teamId}>
-                  <tr className="border-b border-white/5 hover:bg-white/5">
+                  <tr className={`border-b border-white/5 transition-colors ${isDuplicate ? 'bg-red-950/20' : 'hover:bg-white/5'}`}>
                     <td className="p-4">
                       <div 
                         className="flex items-center gap-2 cursor-pointer group"
@@ -256,7 +339,25 @@ export default function MatchResults() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <input type="number" min="0" disabled={isReadOnly} value={score.placement} onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} className="w-full bg-[#111518] border border-white/10 px-2 py-1 text-center text-white disabled:opacity-50" />
+                      <div className="flex flex-col items-center">
+                        <input 
+                          type="number" 
+                          min="0" 
+                          disabled={isReadOnly} 
+                          value={score.placement} 
+                          onChange={(e) => handleScoreChange(score.teamId, 'placement', e.target.value)} 
+                          className={`w-full bg-[#111518] border px-2 py-1 text-center text-white disabled:opacity-50 transition-colors ${
+                            isDuplicate 
+                              ? 'border-red-500 bg-red-950/40 text-red-400 ring-1 ring-red-500 font-bold focus:border-red-500' 
+                              : 'border-white/10 focus:border-[#FF6A00]'
+                          }`} 
+                        />
+                        {isDuplicate && (
+                          <span className="text-[10px] text-red-400 font-mono font-bold mt-1 tracking-tight flex items-center gap-0.5 whitespace-nowrap animate-pulse">
+                            <AlertTriangle className="w-2.5 h-2.5" /> Duplicate #{score.placement}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4">
                       {isEditing ? (
