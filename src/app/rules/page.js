@@ -227,7 +227,7 @@ const OFFICIAL_RULES_DATA = [
     shortTitle: "Disqualification",
     icon: AlertOctagon,
     isTable: true,
-    intro: "A player or team may be immediately disqualified for any of the following offenses (including using Self-AED / Self-Aid kit):",
+    intro: "A player or team may be immediately disqualified for any of the following offenses (including using Self-AED / Self-Aid kit or Recall Towers):",
     matrix: [
       ["Hacking or cheating", "Using prohibited devices"],
       ["Using tablets or iPads", "Using emulators"],
@@ -236,9 +236,10 @@ const OFFICIAL_RULES_DATA = [
       ["Using an unregistered player", "Info sharing after elimination"],
       ["Entering another team's slot", "Deliberately disrupting a team"],
       ["Match manipulation", "Serious misconduct / abuse"],
-      ["Refusing organizer instructions", "Using Self-AED / Self-Aid Kit (STRICTLY PROHIBITED)"]
+      ["Refusing organizer instructions", "Using Self-AED / Self-Aid Kit (STRICTLY PROHIBITED)"],
+      ["Using Recall Towers or any other recall method to bring eliminated teammates back (PROHIBITED)", "Recalling or respawning eliminated teammates"]
     ],
-    callout: "PROHIBITED: USING SELF-AED / SELF-REVIVE KIT IS NOT ALLOWED IN ANY OFFICIAL MATCHES. POSSESSION OR USAGE WILL RESULT IN IMMEDIATE ROUND DISQUALIFICATION."
+    callout: "PROHIBITED: RECALL TOWERS & SELF-AED ARE NOT ALLOWED IN ANY OFFICIAL MATCHES. USING RECALL TOWERS OR SELF-REVIVE RESULTS IN IMMEDIATE DISQUALIFICATION."
   },
   {
     id: "14",
@@ -489,7 +490,7 @@ export default function Rules() {
                 <div className="bg-[#15191C] border-b border-white/10 px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3.5">
                     {/* Section Number Badge */}
-                    <div className="w-10 h-10 bg-[#FF6A00] text-black font-orbitron font-extrabold text-base flex items-center justify-center shrink-0 shadow-md shadow-[#FF6A00]/20 transform skew-x-[-6deg]">
+                    <div className="w-10 h-10 bg-[#FF6A00] text-black font-orbitron font-extrabold text-base flex items-center justify-center shrink-0 shadow-md shadow-[#FF6A00]/20 transform -skew-x-6">
                       <span className="transform skew-x-6">{rule.sectionNum}</span>
                     </div>
 
@@ -572,7 +573,7 @@ export default function Rules() {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                           {rule.matrix.map((row, idx) => (
-                            <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                            <tr key={idx} className="hover:bg-white/2 transition-colors">
                               <td className="p-3 border-r border-white/10 text-white font-medium">
                                 <span className="inline-block w-1.5 h-1.5 bg-red-500/80 rounded-full mr-2"></span>
                                 {row[0]}

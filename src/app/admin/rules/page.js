@@ -161,6 +161,7 @@ A player or team may be immediately disqualified for:
 | Entering another team's slot | Deliberately disrupting a team |
 | Match manipulation | Serious misconduct / abuse |
 | Refusing organizer instructions | Using Self-AED / Self-Aid Kit |
+| Using Recall Towers or any other recall method to bring eliminated teammates back (PROHIBITED) | Recalling or respawning eliminated teammates |
 
 > 🚫 **SELF-AID BAN:** Using Self-AED / Self-Revive kit is strictly prohibited in all competitive lobbies. Any use or possession of a Self-AED results in immediate match disqualification.
 
