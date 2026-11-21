@@ -1,5 +1,5 @@
 "use client";
-import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon, Trophy, Plus, Trash2 } from 'lucide-react';
+import { Settings, Shield, Server, Link as LinkIcon, Save, Loader2, CheckCircle, User, Key, Image as ImageIcon, Trophy, Plus, Trash2, FlaskConical, BellOff, ShieldAlert } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,6 +9,8 @@ export default function AdminSettings() {
   const [communityLink, setCommunityLink] = useState('');
   const [prizePool, setPrizePool] = useState('50K');
   const [mapsStr, setMapsStr] = useState('ERANGEL, MIRAMAR, SANHOK, VIKENDI');
+  const [testingMode, setTestingMode] = useState(false);
+  const [savingTestingMode, setSavingTestingMode] = useState(false);
   
   // Points System State
   const [perKill, setPerKill] = useState(1);
@@ -45,6 +47,7 @@ export default function AdminSettings() {
         ]);
         
         if (settingsRes.success && settingsRes.data) {
+          setTestingMode(Boolean(settingsRes.data.testingMode));
           setCommunityLink(settingsRes.data.communityLink || '');
           setPrizePool(settingsRes.data.prizePool || '50K');
           if (settingsRes.data.maps) setMapsStr(settingsRes.data.maps.join(', '));
@@ -97,6 +100,27 @@ export default function AdminSettings() {
     });
   };
 
+  const handleToggleTestingMode = async () => {
+    const nextVal = !testingMode;
+    try {
+      setSavingTestingMode(true);
+      setErrorMsg('');
+      const res = await api.put('/admin/settings', { testingMode: nextVal });
+      if (res.success) {
+        setTestingMode(nextVal);
+        setSuccessMsg(nextVal 
+          ? 'Testing Mode ENABLED: All team update emails are now suppressed' 
+          : 'Testing Mode DISABLED: Team update emails are now LIVE'
+        );
+        setTimeout(() => setSuccessMsg(''), 4000);
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to update testing mode');
+    } finally {
+      setSavingTestingMode(false);
+    }
+  };
+
   const handleSaveSettings = async () => {
     try {
       setSavingSettings(true);
@@ -104,6 +128,7 @@ export default function AdminSettings() {
       await api.put('/admin/settings', { 
         communityLink,
         prizePool,
+        testingMode,
         pointsSystem: {
           perKill: Number(perKill),
           placementPoints
@@ -377,6 +402,113 @@ export default function AdminSettings() {
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Testing Mode Section */}
+        <div className={`border p-6 md:col-span-2 transition-all duration-300 relative overflow-hidden ${
+          testingMode 
+            ? 'bg-amber-950/20 border-amber-500/50 shadow-[0_0_25px_rgba(245,158,11,0.15)]' 
+            : 'bg-[#111518]/90 border-white/10'
+        }`}>
+          {testingMode && (
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-amber-500 via-[#FF6A00] to-amber-500 animate-pulse"></div>
+          )}
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4 mb-5">
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-none border ${
+                testingMode 
+                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' 
+                  : 'bg-[#1A2023] border-white/10 text-[#B8C0C2]'
+              }`}>
+                <FlaskConical className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h3 className="font-rajdhani text-2xl font-bold text-white uppercase tracking-widest">
+                    Testing Mode
+                  </h3>
+                  <span className={`font-orbitron text-[10px] font-bold px-2.5 py-0.5 uppercase tracking-wider border ${
+                    testingMode 
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse' 
+                      : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                  }`}>
+                    {testingMode ? '● ACTIVE // TEAM EMAILS MUTED' : '● OFF // LIVE DELIVERY'}
+                  </span>
+                </div>
+                <p className="font-inter text-xs text-[#B8C0C2] mt-0.5">
+                  Mute all tournament update emails to teams during testing, rehearsal, and system verification.
+                </p>
+              </div>
+            </div>
+
+            {/* Tactical Toggle Switch Button */}
+            <button
+              type="button"
+              onClick={handleToggleTestingMode}
+              disabled={savingTestingMode}
+              className={`flex items-center gap-3 px-5 py-2.5 font-rajdhani font-bold text-sm uppercase tracking-widest transition-all cursor-pointer transform skew-x-[-10deg] border ${
+                testingMode
+                  ? 'bg-amber-500 hover:bg-amber-400 text-black border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                  : 'bg-[#1A2023] hover:bg-white hover:text-black text-white border-white/20'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              <div className="transform skew-x-10 flex items-center gap-2">
+                {savingTestingMode ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : testingMode ? (
+                  <BellOff className="w-4 h-4 text-black" />
+                ) : (
+                  <FlaskConical className="w-4 h-4 text-[#FF6A00]" />
+                )}
+                <span>{testingMode ? 'DISABLE TESTING MODE' : 'ENABLE TESTING MODE'}</span>
+              </div>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2 space-y-2">
+              <p className="font-inter text-xs text-[#B8C0C2] leading-relaxed">
+                When <strong className="text-white">Testing Mode</strong> is ON, <span className="text-amber-400 font-semibold">no team or player will receive any email updates</span>. You can safely create or update matches, assign room credentials, post announcements, and record match results without triggering emails to registered squads.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-[10px] font-mono bg-[#080A0C] border border-white/10 px-2 py-1 text-[#B8C0C2] flex items-center gap-1">
+                  <span className={testingMode ? "text-amber-400" : "text-emerald-400"}>{testingMode ? "🚫" : "✓"}</span> Match Schedules
+                </span>
+                <span className="text-[10px] font-mono bg-[#080A0C] border border-white/10 px-2 py-1 text-[#B8C0C2] flex items-center gap-1">
+                  <span className={testingMode ? "text-amber-400" : "text-emerald-400"}>{testingMode ? "🚫" : "✓"}</span> Room ID & Passwords
+                </span>
+                <span className="text-[10px] font-mono bg-[#080A0C] border border-white/10 px-2 py-1 text-[#B8C0C2] flex items-center gap-1">
+                  <span className={testingMode ? "text-amber-400" : "text-emerald-400"}>{testingMode ? "🚫" : "✓"}</span> Intel Announcements
+                </span>
+                <span className="text-[10px] font-mono bg-[#080A0C] border border-white/10 px-2 py-1 text-[#B8C0C2] flex items-center gap-1">
+                  <span className={testingMode ? "text-amber-400" : "text-emerald-400"}>{testingMode ? "🚫" : "✓"}</span> Squad Approvals & Rejections
+                </span>
+              </div>
+            </div>
+
+            <div className={`p-4 border flex flex-col justify-center ${
+              testingMode 
+                ? 'bg-amber-950/40 border-amber-500/30 text-amber-200' 
+                : 'bg-[#080A0C] border-white/10 text-[#B8C0C2]'
+            }`}>
+              <div className="font-orbitron text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1 text-white">
+                <ShieldAlert className={`w-4 h-4 ${testingMode ? 'text-amber-400' : 'text-[#FF6A00]'}`} />
+                Mode Status
+              </div>
+              <p className="font-inter text-xs leading-normal">
+                {testingMode ? (
+                  <span className="text-amber-300 font-semibold">
+                    Emails to squads are MUTED. Safely test tournament flows without sending player emails.
+                  </span>
+                ) : (
+                  <span>
+                    Emails are LIVE. Team updates and room details will be dispatched immediately.
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Community & Connections */}

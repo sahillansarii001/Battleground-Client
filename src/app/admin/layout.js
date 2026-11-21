@@ -4,12 +4,24 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { LayoutDashboard, Swords, Users, ShieldAlert, BookOpen, Settings, LogOut, Menu, X, Megaphone, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '@/lib/api';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [testingModeActive, setTestingModeActive] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.get('/admin/settings').then(res => {
+      if (isMounted && res.success && res.data) {
+        setTestingModeActive(Boolean(res.data.testingMode));
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, [pathname]);
 
   if (!user || user.role !== 'ADMIN') return null;
 
@@ -113,6 +125,27 @@ export default function AdminLayout({ children }) {
             </h1>
           </div>
         </div>
+
+        {testingModeActive && (
+          <div className="bg-amber-500/15 border-b border-amber-500/30 px-4 py-2 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-amber-300 font-inter backdrop-blur-sm relative z-20">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="flex h-2 w-2 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+              </span>
+              <span className="font-orbitron font-bold uppercase tracking-wider text-[10px] text-amber-400 shrink-0">
+                Testing Mode Active:
+              </span>
+              <span className="truncate">All team update emails are currently suppressed.</span>
+            </div>
+            <Link 
+              href="/admin/settings" 
+              className="font-orbitron text-[10px] font-bold text-amber-400 hover:text-white uppercase tracking-wider underline transition-colors whitespace-nowrap ml-4 shrink-0"
+            >
+              Settings →
+            </Link>
+          </div>
+        )}
 
         <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
           {children}
